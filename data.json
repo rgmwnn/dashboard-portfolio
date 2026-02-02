@@ -1,0 +1,1231 @@
+{
+  "meta": {
+    "schema_version": "2.0.0",
+    "project": "DEEP PROJECT",
+    "dashboard_title": "Supergoop! Sephora Performance Analysis",
+    "generated_at_utc": "2026-02-02T03:11:03Z",
+    "notes": [
+      "Sentiment is mapped from star ratings: Negative=1–2, Neutral=3, Positive=4–5.",
+      "PWRS (Price-Weighted Review Share) is a value-weighted attention proxy: sum(review_count * price_usd) by brand / total marketplace."
+    ],
+    "data_sources": [
+      "Sephora Products & Skincare Reviews dataset (Kaggle)",
+      "Deck: OCT25-FSDA Amsterdam Team 5 — Final DEEP Deck"
+    ]
+  },
+  "targets": {
+    "weighted_rating_target": 4.2,
+    "pwrs_share_target": 0.025
+  },
+  "dims": {
+    "brands": [
+      {
+        "brand_id": "supergoop",
+        "brand_name": "Supergoop!",
+        "role": "target"
+      },
+      {
+        "brand_id": "sunday_riley",
+        "brand_name": "Sunday Riley",
+        "role": "benchmark"
+      },
+      {
+        "brand_id": "tatcha",
+        "brand_name": "Tatcha",
+        "role": "benchmark"
+      },
+      {
+        "brand_id": "drunk_elephant",
+        "brand_name": "Drunk Elephant",
+        "role": "benchmark"
+      }
+    ],
+    "secondary_categories": {
+      "__ALL__": "All (Brand Selection)"
+    },
+    "drivers": [
+      "Ingredients & Claims",
+      "Logistics",
+      "Makeup Compatibility",
+      "Packaging & Practical Issues",
+      "Product Performance & Efficacy",
+      "Purchase Experience",
+      "Sensory Experience & Application",
+      "Shade Color",
+      "Value Price Repurchase"
+    ],
+    "keyword_fields": [
+      "keyword",
+      "driver",
+      "mention_count",
+      "pos_mentions",
+      "neu_mentions",
+      "neg_mentions",
+      "pos_share",
+      "neu_share",
+      "neg_share"
+    ]
+  },
+  "market": {
+    "benchmark_brands": [
+      {
+        "brand_id": "sunday_riley",
+        "brand_name": "Sunday Riley",
+        "pwrs_share": 0.0496,
+        "avg_rating": 4.26
+      },
+      {
+        "brand_id": "tatcha",
+        "brand_name": "Tatcha",
+        "pwrs_share": 0.0485,
+        "avg_rating": 4.26
+      },
+      {
+        "brand_id": "drunk_elephant",
+        "brand_name": "Drunk Elephant",
+        "pwrs_share": 0.0457,
+        "avg_rating": 4.14
+      },
+      {
+        "brand_id": "supergoop",
+        "brand_name": "Supergoop!",
+        "pwrs_share": 0.0166,
+        "avg_rating": 3.87
+      }
+    ]
+  },
+  "cubes": {
+    "brand_secondary_category_slices": [
+      {
+        "brand_id": "supergoop",
+        "secondary_category_id": "__ALL__",
+        "product_category": "Skincare",
+        "kpis": {
+          "weighted_rating_current": 3.87,
+          "pwrs_share_current": 0.0166
+        },
+        "review_volume": {
+          "total_reviews": 19634,
+          "rating_distribution": {
+            "1": {
+              "count": 1809,
+              "share": 0.092
+            },
+            "2": {
+              "count": 1552,
+              "share": 0.079
+            },
+            "3": {
+              "count": 1690,
+              "share": 0.086
+            },
+            "4": {
+              "count": 2897,
+              "share": 0.148
+            },
+            "5": {
+              "count": 11686,
+              "share": 0.595
+            }
+          },
+          "sentiment_mix": {
+            "positive": {
+              "count": 14588,
+              "share": 0.743
+            },
+            "neutral": {
+              "count": 1689,
+              "share": 0.086
+            },
+            "negative": {
+              "count": 3357,
+              "share": 0.171
+            }
+          }
+        },
+        "drivers": {
+          "positive": [
+            {
+              "driver": "Sensory Experience & Application",
+              "count": 4797,
+              "share": 0.33
+            },
+            {
+              "driver": "Product Performance & Efficacy",
+              "count": 2884,
+              "share": 0.2
+            },
+            {
+              "driver": "Makeup Compatibility",
+              "count": 2399,
+              "share": 0.16
+            },
+            {
+              "driver": "Shade Color",
+              "count": 1771,
+              "share": 0.12
+            },
+            {
+              "driver": "Packaging & Practical Issues",
+              "count": 825,
+              "share": 0.06
+            },
+            {
+              "driver": "Value Price Repurchase",
+              "count": 752,
+              "share": 0.05
+            },
+            {
+              "driver": "Ingredients & Claims",
+              "count": 700,
+              "share": 0.05
+            },
+            {
+              "driver": "Purchase Experience",
+              "count": 328,
+              "share": 0.02
+            },
+            {
+              "driver": "Logistics",
+              "count": 127,
+              "share": 0.01
+            }
+          ],
+          "negative": [
+            {
+              "driver": "Sensory Experience & Application",
+              "count": 1273,
+              "share": 0.3707
+            },
+            {
+              "driver": "Product Performance & Efficacy",
+              "count": 941,
+              "share": 0.274
+            },
+            {
+              "driver": "Makeup Compatibility",
+              "count": 253,
+              "share": 0.0737
+            },
+            {
+              "driver": "Ingredients & Claims",
+              "count": 207,
+              "share": 0.0603
+            },
+            {
+              "driver": "Shade Color",
+              "count": 182,
+              "share": 0.053
+            },
+            {
+              "driver": "Packaging & Practical Issues",
+              "count": 180,
+              "share": 0.0524
+            },
+            {
+              "driver": "Purchase Experience",
+              "count": 168,
+              "share": 0.0489
+            },
+            {
+              "driver": "Value Price Repurchase",
+              "count": 140,
+              "share": 0.0408
+            },
+            {
+              "driver": "Logistics",
+              "count": 90,
+              "share": 0.0262
+            }
+          ]
+        },
+        "keywords": {
+          "top_overall": [
+            {
+              "keyword": "greasy/oily",
+              "driver": "Sensory Experience & Application",
+              "mention_count": 5717,
+              "pos_mentions": 4123,
+              "neu_mentions": 572,
+              "neg_mentions": 1022,
+              "pos_share": 0.7211824383417876,
+              "neu_share": 0.10005247507433969,
+              "neg_share": 0.17876508658387266
+            },
+            {
+              "keyword": "effective/protection",
+              "driver": "Product Performance & Efficacy",
+              "mention_count": 4981,
+              "pos_mentions": 3859,
+              "neu_mentions": 423,
+              "neg_mentions": 699,
+              "pos_share": 0.7747440273037542,
+              "neu_share": 0.08492270628387874,
+              "neg_share": 0.14033326641236699
+            },
+            {
+              "keyword": "under makeup",
+              "driver": "Makeup Compatibility",
+              "mention_count": 4874,
+              "pos_mentions": 4046,
+              "neu_mentions": 324,
+              "neg_mentions": 504,
+              "pos_share": 0.8301189987689782,
+              "neu_share": 0.06647517439474764,
+              "neg_share": 0.10340582683627411
+            },
+            {
+              "keyword": "white cast",
+              "driver": "Shade Color",
+              "mention_count": 2631,
+              "pos_mentions": 2188,
+              "neu_mentions": 192,
+              "neg_mentions": 251,
+              "pos_share": 0.8316229570505511,
+              "neu_share": 0.07297605473204105,
+              "neg_share": 0.09540098821740783
+            },
+            {
+              "keyword": "breakouts/acne",
+              "driver": "Ingredients & Claims",
+              "mention_count": 2213,
+              "pos_mentions": 1414,
+              "neu_mentions": 229,
+              "neg_mentions": 570,
+              "pos_share": 0.6389516493447809,
+              "neu_share": 0.1034794396746498,
+              "neg_share": 0.2575689109805694
+            },
+            {
+              "keyword": "gentle/sensitive",
+              "driver": "Ingredients & Claims",
+              "mention_count": 1609,
+              "pos_mentions": 1184,
+              "neu_mentions": 144,
+              "neg_mentions": 281,
+              "pos_share": 0.7358607830950901,
+              "neu_share": 0.08949658172778123,
+              "neg_share": 0.17464263517712866
+            },
+            {
+              "keyword": "tinted/tint",
+              "driver": "Shade Color",
+              "mention_count": 1143,
+              "pos_mentions": 928,
+              "neu_mentions": 97,
+              "neg_mentions": 118,
+              "pos_share": 0.8118985126859143,
+              "neu_share": 0.08486439195100612,
+              "neg_share": 0.10323709536307961
+            },
+            {
+              "keyword": "sticky",
+              "driver": "Sensory Experience & Application",
+              "mention_count": 1135,
+              "pos_mentions": 822,
+              "neu_mentions": 107,
+              "neg_mentions": 206,
+              "pos_share": 0.7242290748898679,
+              "neu_share": 0.09427312775330396,
+              "neg_share": 0.1814977973568282
+            },
+            {
+              "keyword": "sunburn/burn",
+              "driver": "Product Performance & Efficacy",
+              "mention_count": 1024,
+              "pos_mentions": 706,
+              "neu_mentions": 88,
+              "neg_mentions": 230,
+              "pos_share": 0.689453125,
+              "neu_share": 0.0859375,
+              "neg_share": 0.224609375
+            },
+            {
+              "keyword": "irritation/rash",
+              "driver": "Ingredients & Claims",
+              "mention_count": 943,
+              "pos_mentions": 738,
+              "neu_mentions": 78,
+              "neg_mentions": 127,
+              "pos_share": 0.782608695652174,
+              "neu_share": 0.08271474019088017,
+              "neg_share": 0.13467656415694593
+            },
+            {
+              "keyword": "heavy",
+              "driver": "Sensory Experience & Application",
+              "mention_count": 885,
+              "pos_mentions": 642,
+              "neu_mentions": 78,
+              "neg_mentions": 165,
+              "pos_share": 0.7254237288135593,
+              "neu_share": 0.08813559322033898,
+              "neg_share": 0.1864406779661017
+            },
+            {
+              "keyword": "pilling",
+              "driver": "Makeup Compatibility",
+              "mention_count": 773,
+              "pos_mentions": 535,
+              "neu_mentions": 83,
+              "neg_mentions": 155,
+              "pos_share": 0.6921086675291074,
+              "neu_share": 0.1073738680465718,
+              "neg_share": 0.20051746442432083
+            },
+            {
+              "keyword": "reapply",
+              "driver": "Product Performance & Efficacy",
+              "mention_count": 621,
+              "pos_mentions": 534,
+              "neu_mentions": 42,
+              "neg_mentions": 45,
+              "pos_share": 0.8599033816425121,
+              "neu_share": 0.06763285024154589,
+              "neg_share": 0.07246376811594203
+            },
+            {
+              "keyword": "repurchase",
+              "driver": "Value Price Repurchase",
+              "mention_count": 540,
+              "pos_mentions": 390,
+              "neu_mentions": 90,
+              "neg_mentions": 60,
+              "pos_share": 0.7222222222222222,
+              "neu_share": 0.16666666666666666,
+              "neg_share": 0.1111111111111111
+            },
+            {
+              "keyword": "too expensive",
+              "driver": "Value Price Repurchase",
+              "mention_count": 534,
+              "pos_mentions": 415,
+              "neu_mentions": 52,
+              "neg_mentions": 67,
+              "pos_share": 0.7771535580524345,
+              "neu_share": 0.09737827715355805,
+              "neg_share": 0.1254681647940075
+            },
+            {
+              "keyword": "return/refund",
+              "driver": "Purchase Experience",
+              "mention_count": 423,
+              "pos_mentions": 183,
+              "neu_mentions": 66,
+              "neg_mentions": 174,
+              "pos_share": 0.4326241134751773,
+              "neu_share": 0.15602836879432624,
+              "neg_share": 0.41134751773049644
+            },
+            {
+              "keyword": "worth it/value",
+              "driver": "Value Price Repurchase",
+              "mention_count": 419,
+              "pos_mentions": 301,
+              "neu_mentions": 34,
+              "neg_mentions": 84,
+              "pos_share": 0.7183770883054893,
+              "neu_share": 0.081145584725537,
+              "neg_share": 0.20047732696897375
+            },
+            {
+              "keyword": "pump/dispenser",
+              "driver": "Packaging & Practical Issues",
+              "mention_count": 338,
+              "pos_mentions": 218,
+              "neu_mentions": 52,
+              "neg_mentions": 68,
+              "pos_share": 0.6449704142011834,
+              "neu_share": 0.15384615384615385,
+              "neg_share": 0.20118343195266272
+            },
+            {
+              "keyword": "absorbs quickly",
+              "driver": "Sensory Experience & Application",
+              "mention_count": 311,
+              "pos_mentions": 283,
+              "neu_mentions": 8,
+              "neg_mentions": 20,
+              "pos_share": 0.909967845659164,
+              "neu_share": 0.02572347266881029,
+              "neg_share": 0.06430868167202572
+            },
+            {
+              "keyword": "travel/mini size",
+              "driver": "Packaging & Practical Issues",
+              "mention_count": 304,
+              "pos_mentions": 237,
+              "neu_mentions": 41,
+              "neg_mentions": 26,
+              "pos_share": 0.7796052631578947,
+              "neu_share": 0.13486842105263158,
+              "neg_share": 0.08552631578947369
+            },
+            {
+              "keyword": "water/sweat resistant",
+              "driver": "Product Performance & Efficacy",
+              "mention_count": 303,
+              "pos_mentions": 206,
+              "neu_mentions": 52,
+              "neg_mentions": 45,
+              "pos_share": 0.6798679867986799,
+              "neu_share": 0.1716171617161716,
+              "neg_share": 0.1485148514851485
+            },
+            {
+              "keyword": "leak/broken",
+              "driver": "Packaging & Practical Issues",
+              "mention_count": 215,
+              "pos_mentions": 134,
+              "neu_mentions": 27,
+              "neg_mentions": 54,
+              "pos_share": 0.6232558139534884,
+              "neu_share": 0.12558139534883722,
+              "neg_share": 0.25116279069767444
+            },
+            {
+              "keyword": "burns eyes",
+              "driver": "Ingredients & Claims",
+              "mention_count": 154,
+              "pos_mentions": 113,
+              "neu_mentions": 19,
+              "neg_mentions": 22,
+              "pos_share": 0.7337662337662337,
+              "neu_share": 0.12337662337662338,
+              "neg_share": 0.14285714285714285
+            },
+            {
+              "keyword": "too dark/light",
+              "driver": "Shade Color",
+              "mention_count": 109,
+              "pos_mentions": 66,
+              "neu_mentions": 10,
+              "neg_mentions": 33,
+              "pos_share": 0.6055045871559633,
+              "neu_share": 0.09174311926605505,
+              "neg_share": 0.30275229357798167
+            },
+            {
+              "keyword": "shipping/delivery",
+              "driver": "Logistics",
+              "mention_count": 54,
+              "pos_mentions": 39,
+              "neu_mentions": 3,
+              "neg_mentions": 12,
+              "pos_share": 0.7222222222222222,
+              "neu_share": 0.05555555555555555,
+              "neg_share": 0.2222222222222222
+            }
+          ],
+          "top_positive": [
+            {
+              "keyword": "greasy/oily",
+              "driver": "Sensory Experience & Application",
+              "mention_count": 5717,
+              "pos_mentions": 4123,
+              "neu_mentions": 572,
+              "neg_mentions": 1022,
+              "pos_share": 0.7211824383417876,
+              "neu_share": 0.10005247507433969,
+              "neg_share": 0.17876508658387266
+            },
+            {
+              "keyword": "under makeup",
+              "driver": "Makeup Compatibility",
+              "mention_count": 4874,
+              "pos_mentions": 4046,
+              "neu_mentions": 324,
+              "neg_mentions": 504,
+              "pos_share": 0.8301189987689782,
+              "neu_share": 0.06647517439474764,
+              "neg_share": 0.10340582683627411
+            },
+            {
+              "keyword": "effective/protection",
+              "driver": "Product Performance & Efficacy",
+              "mention_count": 4981,
+              "pos_mentions": 3859,
+              "neu_mentions": 423,
+              "neg_mentions": 699,
+              "pos_share": 0.7747440273037542,
+              "neu_share": 0.08492270628387874,
+              "neg_share": 0.14033326641236699
+            },
+            {
+              "keyword": "white cast",
+              "driver": "Shade Color",
+              "mention_count": 2631,
+              "pos_mentions": 2188,
+              "neu_mentions": 192,
+              "neg_mentions": 251,
+              "pos_share": 0.8316229570505511,
+              "neu_share": 0.07297605473204105,
+              "neg_share": 0.09540098821740783
+            },
+            {
+              "keyword": "breakouts/acne",
+              "driver": "Ingredients & Claims",
+              "mention_count": 2213,
+              "pos_mentions": 1414,
+              "neu_mentions": 229,
+              "neg_mentions": 570,
+              "pos_share": 0.6389516493447809,
+              "neu_share": 0.1034794396746498,
+              "neg_share": 0.2575689109805694
+            },
+            {
+              "keyword": "gentle/sensitive",
+              "driver": "Ingredients & Claims",
+              "mention_count": 1609,
+              "pos_mentions": 1184,
+              "neu_mentions": 144,
+              "neg_mentions": 281,
+              "pos_share": 0.7358607830950901,
+              "neu_share": 0.08949658172778123,
+              "neg_share": 0.17464263517712866
+            },
+            {
+              "keyword": "tinted/tint",
+              "driver": "Shade Color",
+              "mention_count": 1143,
+              "pos_mentions": 928,
+              "neu_mentions": 97,
+              "neg_mentions": 118,
+              "pos_share": 0.8118985126859143,
+              "neu_share": 0.08486439195100612,
+              "neg_share": 0.10323709536307961
+            },
+            {
+              "keyword": "sticky",
+              "driver": "Sensory Experience & Application",
+              "mention_count": 1135,
+              "pos_mentions": 822,
+              "neu_mentions": 107,
+              "neg_mentions": 206,
+              "pos_share": 0.7242290748898679,
+              "neu_share": 0.09427312775330396,
+              "neg_share": 0.1814977973568282
+            },
+            {
+              "keyword": "irritation/rash",
+              "driver": "Ingredients & Claims",
+              "mention_count": 943,
+              "pos_mentions": 738,
+              "neu_mentions": 78,
+              "neg_mentions": 127,
+              "pos_share": 0.782608695652174,
+              "neu_share": 0.08271474019088017,
+              "neg_share": 0.13467656415694593
+            },
+            {
+              "keyword": "sunburn/burn",
+              "driver": "Product Performance & Efficacy",
+              "mention_count": 1024,
+              "pos_mentions": 706,
+              "neu_mentions": 88,
+              "neg_mentions": 230,
+              "pos_share": 0.689453125,
+              "neu_share": 0.0859375,
+              "neg_share": 0.224609375
+            },
+            {
+              "keyword": "heavy",
+              "driver": "Sensory Experience & Application",
+              "mention_count": 885,
+              "pos_mentions": 642,
+              "neu_mentions": 78,
+              "neg_mentions": 165,
+              "pos_share": 0.7254237288135593,
+              "neu_share": 0.08813559322033898,
+              "neg_share": 0.1864406779661017
+            },
+            {
+              "keyword": "pilling",
+              "driver": "Makeup Compatibility",
+              "mention_count": 773,
+              "pos_mentions": 535,
+              "neu_mentions": 83,
+              "neg_mentions": 155,
+              "pos_share": 0.6921086675291074,
+              "neu_share": 0.1073738680465718,
+              "neg_share": 0.20051746442432083
+            },
+            {
+              "keyword": "reapply",
+              "driver": "Product Performance & Efficacy",
+              "mention_count": 621,
+              "pos_mentions": 534,
+              "neu_mentions": 42,
+              "neg_mentions": 45,
+              "pos_share": 0.8599033816425121,
+              "neu_share": 0.06763285024154589,
+              "neg_share": 0.07246376811594203
+            },
+            {
+              "keyword": "too expensive",
+              "driver": "Value Price Repurchase",
+              "mention_count": 534,
+              "pos_mentions": 415,
+              "neu_mentions": 52,
+              "neg_mentions": 67,
+              "pos_share": 0.7771535580524345,
+              "neu_share": 0.09737827715355805,
+              "neg_share": 0.1254681647940075
+            },
+            {
+              "keyword": "repurchase",
+              "driver": "Value Price Repurchase",
+              "mention_count": 540,
+              "pos_mentions": 390,
+              "neu_mentions": 90,
+              "neg_mentions": 60,
+              "pos_share": 0.7222222222222222,
+              "neu_share": 0.16666666666666666,
+              "neg_share": 0.1111111111111111
+            }
+          ],
+          "top_negative": [
+            {
+              "keyword": "greasy/oily",
+              "driver": "Sensory Experience & Application",
+              "mention_count": 5717,
+              "pos_mentions": 4123,
+              "neu_mentions": 572,
+              "neg_mentions": 1022,
+              "pos_share": 0.7211824383417876,
+              "neu_share": 0.10005247507433969,
+              "neg_share": 0.17876508658387266
+            },
+            {
+              "keyword": "effective/protection",
+              "driver": "Product Performance & Efficacy",
+              "mention_count": 4981,
+              "pos_mentions": 3859,
+              "neu_mentions": 423,
+              "neg_mentions": 699,
+              "pos_share": 0.7747440273037542,
+              "neu_share": 0.08492270628387874,
+              "neg_share": 0.14033326641236699
+            },
+            {
+              "keyword": "breakouts/acne",
+              "driver": "Ingredients & Claims",
+              "mention_count": 2213,
+              "pos_mentions": 1414,
+              "neu_mentions": 229,
+              "neg_mentions": 570,
+              "pos_share": 0.6389516493447809,
+              "neu_share": 0.1034794396746498,
+              "neg_share": 0.2575689109805694
+            },
+            {
+              "keyword": "under makeup",
+              "driver": "Makeup Compatibility",
+              "mention_count": 4874,
+              "pos_mentions": 4046,
+              "neu_mentions": 324,
+              "neg_mentions": 504,
+              "pos_share": 0.8301189987689782,
+              "neu_share": 0.06647517439474764,
+              "neg_share": 0.10340582683627411
+            },
+            {
+              "keyword": "gentle/sensitive",
+              "driver": "Ingredients & Claims",
+              "mention_count": 1609,
+              "pos_mentions": 1184,
+              "neu_mentions": 144,
+              "neg_mentions": 281,
+              "pos_share": 0.7358607830950901,
+              "neu_share": 0.08949658172778123,
+              "neg_share": 0.17464263517712866
+            },
+            {
+              "keyword": "white cast",
+              "driver": "Shade Color",
+              "mention_count": 2631,
+              "pos_mentions": 2188,
+              "neu_mentions": 192,
+              "neg_mentions": 251,
+              "pos_share": 0.8316229570505511,
+              "neu_share": 0.07297605473204105,
+              "neg_share": 0.09540098821740783
+            },
+            {
+              "keyword": "sunburn/burn",
+              "driver": "Product Performance & Efficacy",
+              "mention_count": 1024,
+              "pos_mentions": 706,
+              "neu_mentions": 88,
+              "neg_mentions": 230,
+              "pos_share": 0.689453125,
+              "neu_share": 0.0859375,
+              "neg_share": 0.224609375
+            },
+            {
+              "keyword": "sticky",
+              "driver": "Sensory Experience & Application",
+              "mention_count": 1135,
+              "pos_mentions": 822,
+              "neu_mentions": 107,
+              "neg_mentions": 206,
+              "pos_share": 0.7242290748898679,
+              "neu_share": 0.09427312775330396,
+              "neg_share": 0.1814977973568282
+            },
+            {
+              "keyword": "return/refund",
+              "driver": "Purchase Experience",
+              "mention_count": 423,
+              "pos_mentions": 183,
+              "neu_mentions": 66,
+              "neg_mentions": 174,
+              "pos_share": 0.4326241134751773,
+              "neu_share": 0.15602836879432624,
+              "neg_share": 0.41134751773049644
+            },
+            {
+              "keyword": "heavy",
+              "driver": "Sensory Experience & Application",
+              "mention_count": 885,
+              "pos_mentions": 642,
+              "neu_mentions": 78,
+              "neg_mentions": 165,
+              "pos_share": 0.7254237288135593,
+              "neu_share": 0.08813559322033898,
+              "neg_share": 0.1864406779661017
+            },
+            {
+              "keyword": "pilling",
+              "driver": "Makeup Compatibility",
+              "mention_count": 773,
+              "pos_mentions": 535,
+              "neu_mentions": 83,
+              "neg_mentions": 155,
+              "pos_share": 0.6921086675291074,
+              "neu_share": 0.1073738680465718,
+              "neg_share": 0.20051746442432083
+            },
+            {
+              "keyword": "irritation/rash",
+              "driver": "Ingredients & Claims",
+              "mention_count": 943,
+              "pos_mentions": 738,
+              "neu_mentions": 78,
+              "neg_mentions": 127,
+              "pos_share": 0.782608695652174,
+              "neu_share": 0.08271474019088017,
+              "neg_share": 0.13467656415694593
+            },
+            {
+              "keyword": "tinted/tint",
+              "driver": "Shade Color",
+              "mention_count": 1143,
+              "pos_mentions": 928,
+              "neu_mentions": 97,
+              "neg_mentions": 118,
+              "pos_share": 0.8118985126859143,
+              "neu_share": 0.08486439195100612,
+              "neg_share": 0.10323709536307961
+            },
+            {
+              "keyword": "worth it/value",
+              "driver": "Value Price Repurchase",
+              "mention_count": 419,
+              "pos_mentions": 301,
+              "neu_mentions": 34,
+              "neg_mentions": 84,
+              "pos_share": 0.7183770883054893,
+              "neu_share": 0.081145584725537,
+              "neg_share": 0.20047732696897375
+            },
+            {
+              "keyword": "pump/dispenser",
+              "driver": "Packaging & Practical Issues",
+              "mention_count": 338,
+              "pos_mentions": 218,
+              "neu_mentions": 52,
+              "neg_mentions": 68,
+              "pos_share": 0.6449704142011834,
+              "neu_share": 0.15384615384615385,
+              "neg_share": 0.20118343195266272
+            }
+          ],
+          "by_driver": {
+            "Ingredients & Claims": [
+              {
+                "keyword": "breakouts/acne",
+                "driver": "Ingredients & Claims",
+                "mention_count": 2213,
+                "pos_mentions": 1414,
+                "neu_mentions": 229,
+                "neg_mentions": 570,
+                "pos_share": 0.6389516493447809,
+                "neu_share": 0.1034794396746498,
+                "neg_share": 0.2575689109805694
+              },
+              {
+                "keyword": "gentle/sensitive",
+                "driver": "Ingredients & Claims",
+                "mention_count": 1609,
+                "pos_mentions": 1184,
+                "neu_mentions": 144,
+                "neg_mentions": 281,
+                "pos_share": 0.7358607830950901,
+                "neu_share": 0.08949658172778123,
+                "neg_share": 0.17464263517712866
+              },
+              {
+                "keyword": "irritation/rash",
+                "driver": "Ingredients & Claims",
+                "mention_count": 943,
+                "pos_mentions": 738,
+                "neu_mentions": 78,
+                "neg_mentions": 127,
+                "pos_share": 0.782608695652174,
+                "neu_share": 0.08271474019088017,
+                "neg_share": 0.13467656415694593
+              },
+              {
+                "keyword": "burns eyes",
+                "driver": "Ingredients & Claims",
+                "mention_count": 154,
+                "pos_mentions": 113,
+                "neu_mentions": 19,
+                "neg_mentions": 22,
+                "pos_share": 0.7337662337662337,
+                "neu_share": 0.12337662337662338,
+                "neg_share": 0.14285714285714285
+              }
+            ],
+            "Logistics": [
+              {
+                "keyword": "shipping/delivery",
+                "driver": "Logistics",
+                "mention_count": 54,
+                "pos_mentions": 39,
+                "neu_mentions": 3,
+                "neg_mentions": 12,
+                "pos_share": 0.7222222222222222,
+                "neu_share": 0.05555555555555555,
+                "neg_share": 0.2222222222222222
+              }
+            ],
+            "Makeup Compatibility": [
+              {
+                "keyword": "under makeup",
+                "driver": "Makeup Compatibility",
+                "mention_count": 4874,
+                "pos_mentions": 4046,
+                "neu_mentions": 324,
+                "neg_mentions": 504,
+                "pos_share": 0.8301189987689782,
+                "neu_share": 0.06647517439474764,
+                "neg_share": 0.10340582683627411
+              },
+              {
+                "keyword": "pilling",
+                "driver": "Makeup Compatibility",
+                "mention_count": 773,
+                "pos_mentions": 535,
+                "neu_mentions": 83,
+                "neg_mentions": 155,
+                "pos_share": 0.6921086675291074,
+                "neu_share": 0.1073738680465718,
+                "neg_share": 0.20051746442432083
+              }
+            ],
+            "Packaging & Practical Issues": [
+              {
+                "keyword": "pump/dispenser",
+                "driver": "Packaging & Practical Issues",
+                "mention_count": 338,
+                "pos_mentions": 218,
+                "neu_mentions": 52,
+                "neg_mentions": 68,
+                "pos_share": 0.6449704142011834,
+                "neu_share": 0.15384615384615385,
+                "neg_share": 0.20118343195266272
+              },
+              {
+                "keyword": "travel/mini size",
+                "driver": "Packaging & Practical Issues",
+                "mention_count": 304,
+                "pos_mentions": 237,
+                "neu_mentions": 41,
+                "neg_mentions": 26,
+                "pos_share": 0.7796052631578947,
+                "neu_share": 0.13486842105263158,
+                "neg_share": 0.08552631578947369
+              },
+              {
+                "keyword": "leak/broken",
+                "driver": "Packaging & Practical Issues",
+                "mention_count": 215,
+                "pos_mentions": 134,
+                "neu_mentions": 27,
+                "neg_mentions": 54,
+                "pos_share": 0.6232558139534884,
+                "neu_share": 0.12558139534883722,
+                "neg_share": 0.25116279069767444
+              }
+            ],
+            "Product Performance & Efficacy": [
+              {
+                "keyword": "effective/protection",
+                "driver": "Product Performance & Efficacy",
+                "mention_count": 4981,
+                "pos_mentions": 3859,
+                "neu_mentions": 423,
+                "neg_mentions": 699,
+                "pos_share": 0.7747440273037542,
+                "neu_share": 0.08492270628387874,
+                "neg_share": 0.14033326641236699
+              },
+              {
+                "keyword": "sunburn/burn",
+                "driver": "Product Performance & Efficacy",
+                "mention_count": 1024,
+                "pos_mentions": 706,
+                "neu_mentions": 88,
+                "neg_mentions": 230,
+                "pos_share": 0.689453125,
+                "neu_share": 0.0859375,
+                "neg_share": 0.224609375
+              },
+              {
+                "keyword": "reapply",
+                "driver": "Product Performance & Efficacy",
+                "mention_count": 621,
+                "pos_mentions": 534,
+                "neu_mentions": 42,
+                "neg_mentions": 45,
+                "pos_share": 0.8599033816425121,
+                "neu_share": 0.06763285024154589,
+                "neg_share": 0.07246376811594203
+              },
+              {
+                "keyword": "water/sweat resistant",
+                "driver": "Product Performance & Efficacy",
+                "mention_count": 303,
+                "pos_mentions": 206,
+                "neu_mentions": 52,
+                "neg_mentions": 45,
+                "pos_share": 0.6798679867986799,
+                "neu_share": 0.1716171617161716,
+                "neg_share": 0.1485148514851485
+              }
+            ],
+            "Purchase Experience": [
+              {
+                "keyword": "return/refund",
+                "driver": "Purchase Experience",
+                "mention_count": 423,
+                "pos_mentions": 183,
+                "neu_mentions": 66,
+                "neg_mentions": 174,
+                "pos_share": 0.4326241134751773,
+                "neu_share": 0.15602836879432624,
+                "neg_share": 0.41134751773049644
+              }
+            ],
+            "Sensory Experience & Application": [
+              {
+                "keyword": "greasy/oily",
+                "driver": "Sensory Experience & Application",
+                "mention_count": 5717,
+                "pos_mentions": 4123,
+                "neu_mentions": 572,
+                "neg_mentions": 1022,
+                "pos_share": 0.7211824383417876,
+                "neu_share": 0.10005247507433969,
+                "neg_share": 0.17876508658387266
+              },
+              {
+                "keyword": "sticky",
+                "driver": "Sensory Experience & Application",
+                "mention_count": 1135,
+                "pos_mentions": 822,
+                "neu_mentions": 107,
+                "neg_mentions": 206,
+                "pos_share": 0.7242290748898679,
+                "neu_share": 0.09427312775330396,
+                "neg_share": 0.1814977973568282
+              },
+              {
+                "keyword": "heavy",
+                "driver": "Sensory Experience & Application",
+                "mention_count": 885,
+                "pos_mentions": 642,
+                "neu_mentions": 78,
+                "neg_mentions": 165,
+                "pos_share": 0.7254237288135593,
+                "neu_share": 0.08813559322033898,
+                "neg_share": 0.1864406779661017
+              },
+              {
+                "keyword": "absorbs quickly",
+                "driver": "Sensory Experience & Application",
+                "mention_count": 311,
+                "pos_mentions": 283,
+                "neu_mentions": 8,
+                "neg_mentions": 20,
+                "pos_share": 0.909967845659164,
+                "neu_share": 0.02572347266881029,
+                "neg_share": 0.06430868167202572
+              },
+              {
+                "keyword": "doesn't absorb",
+                "driver": "Sensory Experience & Application",
+                "mention_count": 41,
+                "pos_mentions": 7,
+                "neu_mentions": 7,
+                "neg_mentions": 27,
+                "pos_share": 0.17073170731707318,
+                "neu_share": 0.17073170731707318,
+                "neg_share": 0.6585365853658537
+              }
+            ],
+            "Shade Color": [
+              {
+                "keyword": "white cast",
+                "driver": "Shade Color",
+                "mention_count": 2631,
+                "pos_mentions": 2188,
+                "neu_mentions": 192,
+                "neg_mentions": 251,
+                "pos_share": 0.8316229570505511,
+                "neu_share": 0.07297605473204105,
+                "neg_share": 0.09540098821740783
+              },
+              {
+                "keyword": "tinted/tint",
+                "driver": "Shade Color",
+                "mention_count": 1143,
+                "pos_mentions": 928,
+                "neu_mentions": 97,
+                "neg_mentions": 118,
+                "pos_share": 0.8118985126859143,
+                "neu_share": 0.08486439195100612,
+                "neg_share": 0.10323709536307961
+              },
+              {
+                "keyword": "too dark/light",
+                "driver": "Shade Color",
+                "mention_count": 109,
+                "pos_mentions": 66,
+                "neu_mentions": 10,
+                "neg_mentions": 33,
+                "pos_share": 0.6055045871559633,
+                "neu_share": 0.09174311926605505,
+                "neg_share": 0.30275229357798167
+              }
+            ],
+            "Value Price Repurchase": [
+              {
+                "keyword": "repurchase",
+                "driver": "Value Price Repurchase",
+                "mention_count": 540,
+                "pos_mentions": 390,
+                "neu_mentions": 90,
+                "neg_mentions": 60,
+                "pos_share": 0.7222222222222222,
+                "neu_share": 0.16666666666666666,
+                "neg_share": 0.1111111111111111
+              },
+              {
+                "keyword": "too expensive",
+                "driver": "Value Price Repurchase",
+                "mention_count": 534,
+                "pos_mentions": 415,
+                "neu_mentions": 52,
+                "neg_mentions": 67,
+                "pos_share": 0.7771535580524345,
+                "neu_share": 0.09737827715355805,
+                "neg_share": 0.1254681647940075
+              },
+              {
+                "keyword": "worth it/value",
+                "driver": "Value Price Repurchase",
+                "mention_count": 419,
+                "pos_mentions": 301,
+                "neu_mentions": 34,
+                "neg_mentions": 84,
+                "pos_share": 0.7183770883054893,
+                "neu_share": 0.081145584725537,
+                "neg_share": 0.20047732696897375
+              }
+            ]
+          }
+        },
+        "products": [
+          {
+            "name": "Daily Dose Bioretinol + Mineral SPF 40 with Bakuchiol",
+            "rating": 4.7297,
+            "review_count": 370
+          },
+          {
+            "name": "(Glow)Setting 100% Mineral Powder SPF 35",
+            "rating": 4.483,
+            "review_count": 147
+          },
+          {
+            "name": "Glowscreen Body Sunscreen SPF 40 PA+++",
+            "rating": 4.4389,
+            "review_count": 262
+          },
+          {
+            "name": "Daily Dose Hydra-Ceramide Boost + SPF 40 Sunscreen Oil PA+++",
+            "rating": 4.3783,
+            "review_count": 267
+          },
+          {
+            "name": "Mini PLAY Everyday Sunscreen Lotion SPF 30 PA++++",
+            "rating": 4.3333,
+            "review_count": 57
+          },
+          {
+            "name": "CC Screen 100% Mineral CC Cream SPF 50 PA++++",
+            "rating": 3.3958,
+            "review_count": 528
+          },
+          {
+            "name": "Bright-Eyed 100% Mineral Eye Cream SPF 40 PA+++",
+            "rating": 3.6045,
+            "review_count": 445
+          },
+          {
+            "name": "(Re) Setting Refreshing Mist SPF 40",
+            "rating": 3.644,
+            "review_count": 382
+          },
+          {
+            "name": "Glow Stick Sunscreen SPF 50 PA++++",
+            "rating": 3.6499,
+            "review_count": 497
+          },
+          {
+            "name": "Daily Dose Vitamin C + SPF 40 Sunscreen Serum PA+++",
+            "rating": 3.6725,
+            "review_count": 574
+          }
+        ],
+        "products_meta": {
+          "source": "converted from old products list",
+          "min_reviews": 20,
+          "method": "top5 highest & lowest by avg_rating"
+        }
+      }
+    ]
+  },
+  "how_to_extend": {
+    "secondary_category_rule": "Populate slices by grouping reviews on (brand_id, secondary_category_id). 'secondary_category_id' must come from product_info.secondary_category. The dashboard should filter on this field, NOT the primary product_category.",
+    "required_slice_fields": [
+      "review_volume.rating_distribution",
+      "review_volume.sentiment_mix",
+      "drivers.positive",
+      "drivers.negative",
+      "keywords.top_overall"
+    ]
+  }
+}
