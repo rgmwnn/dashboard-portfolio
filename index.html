@@ -3,1326 +3,733 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supergoop's Sephora Performance Analysis Dashboard</title>
+    <title>Supergoop! Customer Review Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #f8bbd0;
+            --accent-color: #e91e63;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #757575;
+            --white: #ffffff;
+            --shadow: 0 2px 10px rgba(0,0,0,0.05);
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
-        :root {
-            --primary-color: #1e3a8a;
-            --secondary-color: #3b82f6;
-            --accent-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --light-bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --border-color: #e2e8f0;
-            --shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-        }
-
+        
         body {
-            font-family: 'HarmonyOS Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #f1f5f9;
-            min-height: 100vh;
-            padding: 20px;
-            color: var(--text-primary);
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            line-height: 1.6;
         }
-
-        .dashboard-container {
+        
+        .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: var(--card-bg);
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
-        }
-
-        header {
-            background: var(--primary-color);
-            color: white;
-            padding: 30px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        header::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
-            border-radius: 50%;
-            transform: translate(50%, -50%);
-        }
-
-        h1 {
-            font-size: 2em;
-            margin-bottom: 8px;
-            font-weight: 600;
-            font-family: 'DingTalk JinBuTi', sans-serif;
-            letter-spacing: -0.05em;
-        }
-
-        .subtitle {
-            font-size: 1em;
-            opacity: 0.9;
-        }
-
-        .filters {
-            background: var(--light-bg);
             padding: 20px;
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
-            border-bottom: 1px solid var(--border-color);
         }
-
-        .filter-group {
+        
+        header {
             display: flex;
-            flex-direction: column;
-            gap: 8px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+        
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .last-updated {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            color: var(--dark-gray);
+        }
+        
+        .filters {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            flex: 1;
             min-width: 200px;
         }
-
-        .filter-group label {
-            font-size: 0.85em;
-            color: var(--text-secondary);
+        
+        label {
+            font-family: 'Montserrat', sans-serif;
+            display: block;
+            margin-bottom: 8px;
             font-weight: 500;
+            font-size: 14px;
+            color: var(--dark-gray);
         }
-
-        .custom-select {
-            position: relative;
-        }
-
-        .custom-select select {
+        
+        select {
+            font-family: 'Montserrat', sans-serif;
             width: 100%;
-            padding: 10px 35px 10px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            background: white;
-            font-size: 0.9em;
-            appearance: none;
-            cursor: pointer;
-            transition: all 0.2s;
+            padding: 10px 12px;
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--border-radius);
+            background-color: var(--white);
+            font-size: 14px;
+            transition: var(--transition);
         }
-
-        .custom-select select:hover {
-            border-color: var(--secondary-color);
-        }
-
-        .custom-select select:focus {
+        
+        select:focus {
             outline: none;
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.2);
         }
-
-        .custom-select::after {
-            content: '▼';
-            position: absolute;
-            top: 50%;
-            right: 12px;
-            transform: translateY(-50%);
-            pointer-events: none;
-            color: var(--text-secondary);
-            font-size: 0.8em;
-        }
-
-        .kpi-section {
-            padding: 30px;
+        
+        .kpi-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
-            background: var(--card-bg);
+            margin-bottom: 30px;
         }
-
+        
         .kpi-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
+            background-color: var(--white);
             padding: 20px;
-            border-radius: 8px;
+            border-radius: var(--border-radius);
             box-shadow: var(--shadow);
-            transition: all 0.2s;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
+            text-align: center;
         }
-
-        .kpi-card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--primary-color);
-        }
-
-        .kpi-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transform: translateY(-2px);
-        }
-
-        .kpi-title {
-            font-size: 0.85em;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 500;
-        }
-
+        
         .kpi-value {
-            font-size: 2em;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-            font-family: 'Futura', sans-serif;
-        }
-
-        .kpi-target {
-            font-size: 0.85em;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .kpi-gap {
-            background: #fee2e2;
-            color: var(--danger-color);
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.8em;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 32px;
             font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--accent-color);
         }
-
-        .content-section {
-            padding: 30px;
-            background: var(--light-bg);
+        
+        .kpi-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            color: var(--dark-gray);
         }
-
-        .section-title {
-            font-size: 1.5em;
-            color: var(--text-primary);
-            margin-bottom: 20px;
-            font-weight: 600;
-            font-family: 'DingTalk JinBuTi', sans-serif;
-            letter-spacing: -0.05em;
-        }
-
-        .charts-grid {
+        
+        .charts-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
-
-        .chart-container {
-            background: var(--card-bg);
+        
+        .chart-card {
+            background-color: var(--white);
             padding: 20px;
-            border-radius: 8px;
+            border-radius: var(--border-radius);
             box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-            position: relative;
-            overflow: hidden;
         }
-
-        .chart-container::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0) 70%);
-            border-radius: 50%;
-            transform: translate(30%, 30%);
-        }
-
+        
         .chart-title {
-            font-size: 1.1em;
-            color: var(--text-primary);
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        .table-container {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        th {
-            background: var(--light-bg);
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: 0.9em;
-        }
-
-        tr:hover {
-            background: #f8fafc;
-        }
-
-        /* Redesigned table styling */
-        .redesigned-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .redesigned-table thead th {
-            background: #f1f5f9;
-            color: #475569;
-            font-weight: 600;
-            font-size: 0.9rem;
-            padding: 14px 16px;
-            text-align: left;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .redesigned-table tbody tr {
-            transition: all 0.15s ease;
-        }
-
-        .redesigned-table tbody tr:nth-child(even) {
-            background-color: #fafbfc;
-        }
-
-        .redesigned-table tbody tr:hover {
-            background-color: #f0f7ff;
-            transform: translateX(3px);
-        }
-
-        .redesigned-table td {
-            padding: 14px 16px;
-            font-size: 0.95rem;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .redesigned-table .product-name {
-            font-weight: 600;
-            color: #1e293b;
-        }
-
-        .redesigned-table .price {
-            color: #64748b;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
             font-weight: 500;
+            margin-bottom: 15px;
+            color: var(--text-color);
         }
-
-        .redesigned-table .rating {
-            font-weight: 600;
+        
+        .chart-container {
+            position: relative;
+            height: 250px;
         }
-
-        .redesigned-table .rating-high {
-            color: #059669;
+        
+        .keywords-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
-
-        .redesigned-table .rating-medium {
-            color: #d97706;
-        }
-
-        .redesigned-table .rating-low {
-            color: #dc2626;
-        }
-
-        .redesigned-table .weight {
-            color: #64748b;
-            font-size: 0.9rem;
-        }
-
-        .rating-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .rating-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-
-        .rating-dot.high {
-            background-color: #059669;
-        }
-
-        .rating-dot.medium {
-            background-color: #d97706;
-        }
-
-        .rating-dot.low {
-            background-color: #dc2626;
-        }
-
-        .chart-full-width {
-            grid-column: 1 / -1;
-        }
-
-        .empty-state {
+        
+        .loading {
+            font-family: 'Montserrat', sans-serif;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             height: 200px;
-            color: var(--text-secondary);
+            color: var(--dark-gray);
         }
-
-        .empty-state-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
+        
+        .no-data {
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            color: var(--dark-gray);
+            font-style: italic;
         }
-
+        
+        .benchmark-container {
+            background-color: var(--white);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .benchmark-chart {
+            position: relative;
+            height: 200px;
+        }
+        
+        .products-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .product-list {
+            background-color: var(--white);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .product-item:last-child {
+            border-bottom: none;
+        }
+        
+        .product-name {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .rating-stars {
+            color: #ffc107;
+        }
+        
+        .rating-value {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .rating-count {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            color: var(--dark-gray);
+        }
+        
         @media (max-width: 768px) {
-            .charts-grid {
+            .charts-container {
                 grid-template-columns: 1fr;
             }
             
-            .kpi-section {
+            .keywords-container {
                 grid-template-columns: 1fr;
             }
             
-            h1 {
-                font-size: 1.5em;
+            .products-container {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div class="dashboard-container">
+    <div class="container">
         <header>
-            <h1>Supergoop's Sephora Performance Analysis</h1>
-            <div class="subtitle">Executive Dashboard • Last 12 Months Performance</div>
+            <h1 id="dashboard-title">Loading Dashboard...</h1>
+            <div class="last-updated" id="last-updated">Loading...</div>
         </header>
-
+        
         <div class="filters">
             <div class="filter-group">
-                <label>Brand</label>
-                <div class="custom-select">
-                    <select id="brandFilter">
-                        <option value="all">All Brands</option>
-                    </select>
+                <label for="brand-filter">Brand</label>
+                <select id="brand-filter">
+                    <option value="">Loading...</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="category-filter">Secondary Category</label>
+                <select id="category-filter">
+                    <option value="">Loading...</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="kpi-cards">
+            <div class="kpi-card">
+                <div class="kpi-value" id="weighted-rating">-</div>
+                <div class="kpi-label">Weighted Rating</div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-value" id="pwrs-share">-</div>
+                <div class="kpi-label">PWRS Share</div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-value" id="total-reviews">-</div>
+                <div class="kpi-label">Total Reviews</div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-value" id="positive-share">-</div>
+                <div class="kpi-label">Positive Share</div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-value" id="negative-share">-</div>
+                <div class="kpi-label">Negative Share</div>
+            </div>
+        </div>
+        
+        <div class="products-container">
+            <div class="product-list">
+                <div class="chart-title">Top 5 Highest-Rated Products</div>
+                <div id="highest-rated-products">
+                    <div class="loading">Loading products...</div>
                 </div>
             </div>
-            <div class="filter-group">
-                <label>Product Category</label>
-                <div class="custom-select">
-                    <select id="categoryFilter">
-                        <option value="all">All Categories</option>
-                    </select>
+            
+            <div class="product-list">
+                <div class="chart-title">Top 5 Lowest-Rated Products</div>
+                <div id="lowest-rated-products">
+                    <div class="loading">Loading products...</div>
                 </div>
             </div>
         </div>
-
-        <section class="kpi-section">
-            <div class="kpi-card">
-                <div class="kpi-title">Weighted Rating</div>
-                <div class="kpi-value" id="weightedRating">-</div>
-                <div class="kpi-target">
-                    Target: <span id="targetRating">4.2</span>
-                    <span class="kpi-gap" id="ratingGap">-</span>
-                </div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-title">Value-Weighted Demand Share</div>
-                <div class="kpi-value" id="vwds">-</div>
-                <div class="kpi-target">
-                    Target: 2.0%
-                    <span class="kpi-gap" id="vwdsGap">-</span>
-                </div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-title">Review Share</div>
-                <div class="kpi-value" id="reviewShare">-</div>
-                <div class="kpi-target">
-                    Category: <span id="categoryName">Skincare</span>
-                </div>
-            </div>
-        </section>
-
-        <section class="content-section">
-            <h2 class="section-title">Performance Overview</h2>
-            
-            <div class="charts-grid">
+        
+        <div class="charts-container">
+            <div class="chart-card">
+                <div class="chart-title">Rating Breakdown</div>
                 <div class="chart-container">
-                    <h3 class="chart-title">Rating Distribution</h3>
-                    <canvas id="ratingChart"></canvas>
+                    <canvas id="rating-chart"></canvas>
                 </div>
             </div>
-
-            <h2 class="section-title">Gap Analysis</h2>
             
-            <div class="chart-container chart-full-width">
-                <h3 class="chart-title">Pareto Chart: Cumulative Gap Contribution</h3>
-                <canvas id="paretoChart"></canvas>
-            </div>
-
-            <div class="chart-container chart-full-width">
-                <h3 class="chart-title">Scatter: Rating vs Review Volume (Bubble = Value Demand)</h3>
-                <canvas id="scatterChart"></canvas>
-            </div>
-
-            <h2 class="section-title">SKU Analysis</h2>
-            
-            <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-title">Positive Drivers</div>
                 <div class="chart-container">
-                    <h3 class="chart-title">Top SKUs by VWDS Contribution</h3>
-                    <canvas id="vwdsChart"></canvas>
+                    <canvas id="positive-drivers-chart"></canvas>
                 </div>
             </div>
-
-            <div class="table-container">
-                <h3 class="chart-title">Top SKUs Contributing to Rating Gap</h3>
-                <table class="redesigned-table" id="skuTable">
-                    <thead>
-                        <tr>
-                            <th>Product SKU</th>
-                            <th>Price</th>
-                            <th>Rating</th>
-                            <th>Review Weight</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="4" style="text-align: center;">Loading data...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <h2 class="section-title">Purchase Driver Analysis</h2>
             
-            <div class="chart-container">
-                <h3 class="chart-title">Driver Hotspots by SKU</h3>
-                <canvas id="hotspotChart"></canvas>
-            </div>
-
-            <h2 class="section-title">Customer Feedback Drivers</h2>
-            
-            <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-title">Negative Drivers</div>
                 <div class="chart-container">
-                    <h3 class="chart-title">Top Negative Drivers</h3>
-                    <canvas id="negativeDriversChart"></canvas>
+                    <canvas id="negative-drivers-chart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chart-card">
+            <div class="chart-title">Top Keywords</div>
+            <div class="keywords-container">
+                <div class="chart-container">
+                    <canvas id="positive-keywords-chart"></canvas>
                 </div>
                 <div class="chart-container">
-                    <h3 class="chart-title">Top Positive Drivers</h3>
-                    <canvas id="positiveDriversChart"></canvas>
+                    <canvas id="negative-keywords-chart"></canvas>
                 </div>
             </div>
-
-            <h2 class="section-title">Value Demand Analysis</h2>
-            
-            <div class="chart-container chart-full-width">
-                <h3 class="chart-title">VWDS Decomposition: ValueDemand = Price × Volume</h3>
-                <canvas id="vwdsDecompositionChart"></canvas>
+        </div>
+        
+        <div class="benchmark-container" id="benchmark-container" style="display: none;">
+            <div class="chart-title">Benchmark Comparison</div>
+            <div class="benchmark-chart">
+                <canvas id="benchmark-chart"></canvas>
             </div>
-
-            <div class="chart-container chart-full-width">
-                <h3 class="chart-title">Lorenz Curve: ValueDemand Concentration by SKU</h3>
-                <canvas id="lorenzChart"></canvas>
-            </div>
-
-            <h2 class="section-title">Segment Analysis</h2>
-            
-            <div class="chart-container">
-                <h3 class="chart-title">Rating by Skin Type for Top SKUs</h3>
-                <canvas id="segmentChart"></canvas>
-            </div>
-        </section>
+        </div>
     </div>
 
     <script>
-        /*
-        Expected JSON schema:
-        {
-          "products": [
-            {
-              "brand": "supergoop",
-              "category": "sunscreen",
-              "sku": "Unseen Sunscreen",
-              "price": 38,
-              "avg_rating": 3.8,
-              "review_count": 1200,
-              "rating_dist": {"1":10,"2":20,"3":30,"4":40,"5":50},
-              "skin_type_ratings": {
-                "Normal": {"avg_rating": 4.2, "review_count": 200},
-                "Oily": {"avg_rating": 3.8, "review_count": 180},
-                "Dry": {"avg_rating": 4.1, "review_count": 160},
-                "Combination": {"avg_rating": 4.0, "review_count": 220},
-                "Sensitive": {"avg_rating": 3.2, "review_count": 90}
-              },
-              "drivers": {
-                "negative": [{"name":"Value Price Repurchase", "share": 0.22}, {"name":"Texture/Application", "share": 0.15}],
-                "positive": [{"name":"Product Performance & Efficacy", "share": 0.35}, {"name":"Skin Compatibility", "share": 0.22}]
-              }
-            }
-          ],
-          "meta": {
-            "target_rating": 4.2
-          }
-        }
-        */
-
         // Global variables
-        let allData = [];
-        let filteredData = [];
-        let categoryUniverseData = [];
-        let charts = {};
-        let targetRating = 4.2;
-
-        // Color palette
-        const colors = {
-            primary: '#3b82f6',
-            secondary: '#64748b',
-            success: '#10b981',
-            warning: '#f59e0b',
-            danger: '#ef4444',
-            info: '#06b6d4',
-            gray: ['#e2e8f0', '#cbd5e1', '#94a3b8', '#64748b', '#475569', '#334155', '#1e293b']
+        let dashboardData = null;
+        let charts = {
+            rating: null,
+            positiveDrivers: null,
+            negativeDrivers: null,
+            positiveKeywords: null,
+            negativeKeywords: null,
+            benchmark: null
         };
-
-        // Fallback dummy data
-        const dummyData = {
-            products: [
-                {
-                    brand: "supergoop",
-                    category: "sunscreen",
-                    sku: "Unseen Sunscreen",
-                    price: 38,
-                    avg_rating: 3.8,
-                    review_count: 1200,
-                    rating_dist: {"1":60,"2":120,"3":360,"4":480,"5":180},
-                    skin_type_ratings: {
-                        "Normal": {"avg_rating": 4.2, "review_count": 200},
-                        "Oily": {"avg_rating": 3.8, "review_count": 180},
-                        "Dry": {"avg_rating": 4.1, "review_count": 160},
-                        "Combination": {"avg_rating": 4.0, "review_count": 220},
-                        "Sensitive": {"avg_rating": 3.2, "review_count": 90}
-                    },
-                    drivers: {
-                        "negative": [
-                            {"name":"Value Price Repurchase", "share": 0.22}, 
-                            {"name":"Texture/Application", "share": 0.15},
-                            {"name":"Product Performance & Efficacy", "share": 0.12}
-                        ],
-                        "positive": [
-                            {"name":"Product Performance & Efficacy", "share": 0.35}, 
-                            {"name":"Skin Compatibility", "share": 0.22},
-                            {"name":"Scent", "share": 0.15}
-                        ]
-                    }
-                },
-                {
-                    brand: "supergoop",
-                    category: "sunscreen",
-                    sku: "Glowscreen SPF 40",
-                    price: 36,
-                    avg_rating: 3.9,
-                    review_count: 980,
-                    rating_dist: {"1":50,"2":100,"3":300,"4":400,"5":130},
-                    skin_type_ratings: {
-                        "Normal": {"avg_rating": 4.3, "review_count": 180},
-                        "Oily": {"avg_rating": 3.5, "review_count": 150},
-                        "Dry": {"avg_rating": 4.2, "review_count": 140},
-                        "Combination": {"avg_rating": 4.1, "review_count": 200},
-                        "Sensitive": {"avg_rating": 3.9, "review_count": 110}
-                    },
-                    drivers: {
-                        "negative": [
-                            {"name":"Texture/Application", "share": 0.18}, 
-                            {"name":"Value Price Repurchase", "share": 0.15},
-                            {"name":"Scent", "share": 0.10}
-                        ],
-                        "positive": [
-                            {"name":"Product Performance & Efficacy", "share": 0.30}, 
-                            {"name":"Skin Compatibility", "share": 0.25},
-                            {"name":"Packaging", "share": 0.12}
-                        ]
-                    }
-                },
-                {
-                    brand: "supergoop",
-                    category: "sunscreen",
-                    sku: "PLAY Lotion SPF 30",
-                    price: 32,
-                    avg_rating: 4.0,
-                    review_count: 750,
-                    rating_dist: {"1":30,"2":70,"3":200,"4":350,"5":100},
-                    skin_type_ratings: {
-                        "Normal": {"avg_rating": 4.1, "review_count": 150},
-                        "Oily": {"avg_rating": 4.0, "review_count": 130},
-                        "Dry": {"avg_rating": 3.7, "review_count": 120},
-                        "Combination": {"avg_rating": 4.2, "review_count": 140},
-                        "Sensitive": {"avg_rating": 4.0, "review_count": 110}
-                    },
-                    drivers: {
-                        "negative": [
-                            {"name":"Value Price Repurchase", "share": 0.12}, 
-                            {"name":"Product Performance & Efficacy", "share": 0.10}
-                        ],
-                        "positive": [
-                            {"name":"Product Performance & Efficacy", "share": 0.32}, 
-                            {"name":"Skin Compatibility", "share": 0.20},
-                            {"name":"Texture/Application", "share": 0.18}
-                        ]
-                    }
-                },
-                {
-                    brand: "supergoop",
-                    category: "sunscreen",
-                    sku: "Mineral Sheerscreen",
-                    price: 42,
-                    avg_rating: 4.1,
-                    review_count: 620,
-                    rating_dist: {"1":20,"2":50,"3":150,"4":300,"5":100},
-                    skin_type_ratings: {
-                        "Normal": {"avg_rating": 4.0, "review_count": 120},
-                        "Oily": {"avg_rating": 4.1, "review_count": 110},
-                        "Dry": {"avg_rating": 3.4, "review_count": 100},
-                        "Combination": {"avg_rating": 4.0, "review_count": 130},
-                        "Sensitive": {"avg_rating": 4.2, "review_count": 160}
-                    },
-                    drivers: {
-                        "negative": [
-                            {"name":"Value Price Repurchase", "share": 0.15}, 
-                            {"name":"Texture/Application", "share": 0.10}
-                        ],
-                        "positive": [
-                            {"name":"Skin Compatibility", "share": 0.35}, 
-                            {"name":"Product Performance & Efficacy", "share": 0.25}
-                        ]
-                    }
-                },
-                {
-                    brand: "supergoop",
-                    category: "sunscreen",
-                    sku: "Sunscreen Mist",
-                    price: 34,
-                    avg_rating: 4.2,
-                    review_count: 510,
-                    rating_dist: {"1":15,"2":40,"3":100,"4":280,"5":75},
-                    skin_type_ratings: {
-                        "Normal": {"avg_rating": 4.2, "review_count": 100},
-                        "Oily": {"avg_rating": 3.9, "review_count": 90},
-                        "Dry": {"avg_rating": 4.1, "review_count": 80},
-                        "Combination": {"avg_rating": 4.0, "review_count": 100},
-                        "Sensitive": {"avg_rating": 3.3, "review_count": 70}
-                    },
-                    drivers: {
-                        "negative": [
-                            {"name":"Value Price Repurchase", "share": 0.10}, 
-                            {"name":"Scent", "share": 0.08}
-                        ],
-                        "positive": [
-                            {"name":"Product Performance & Efficacy", "share": 0.30}, 
-                            {"name":"Texture/Application", "share": 0.25}
-                        ]
-                    }
-                },
-                {
-                    brand: "competitor-a",
-                    category: "sunscreen",
-                    sku: "Competitor Sunscreen A",
-                    price: 35,
-                    avg_rating: 4.3,
-                    review_count: 1500,
-                    rating_dist: {"1":30,"2":50,"3":200,"4":700,"5":520},
-                    skin_type_ratings: {
-                        "Normal": {"avg_rating": 4.4, "review_count": 300},
-                        "Oily": {"avg_rating": 4.2, "review_count": 280},
-                        "Dry": {"avg_rating": 4.3, "review_count": 260},
-                        "Combination": {"avg_rating": 4.3, "review_count": 320},
-                        "Sensitive": {"avg_rating": 4.1, "review_count": 140}
-                    },
-                    drivers: {
-                        "negative": [
-                            {"name":"Value Price Repurchase", "share": 0.08}, 
-                            {"name":"Scent", "share": 0.05}
-                        ],
-                        "positive": [
-                            {"name":"Product Performance & Efficacy", "share": 0.40}, 
-                            {"name":"Skin Compatibility", "share": 0.30}
-                        ]
-                    }
-                },
-                {
-                    brand: "competitor-b",
-                    category: "sunscreen",
-                    sku: "Competitor Sunscreen B",
-                    price: 40,
-                    avg_rating: 4.2,
-                    review_count: 1200,
-                    rating_dist: {"1":25,"2":45,"3":180,"4":600,"5":350},
-                    skin_type_ratings: {
-                        "Normal": {"avg_rating": 4.3, "review_count": 240},
-                        "Oily": {"avg_rating": 4.1, "review_count": 220},
-                        "Dry": {"avg_rating": 4.2, "review_count": 200},
-                        "Combination": {"avg_rating": 4.2, "review_count": 260},
-                        "Sensitive": {"avg_rating": 4.0, "review_count": 120}
-                    },
-                    drivers: {
-                        "negative": [
-                            {"name":"Value Price Repurchase", "share": 0.12}, 
-                            {"name":"Texture/Application", "share": 0.08}
-                        ],
-                        "positive": [
-                            {"name":"Product Performance & Efficacy", "share": 0.35}, 
-                            {"name":"Skin Compatibility", "share": 0.25}
-                        ]
-                    }
-                },
-                {
-                    brand: "supergoop",
-                    category: "moisturizer",
-                    sku: "Supergoop Moisturizer",
-                    price: 45,
-                    avg_rating: 4.0,
-                    review_count: 400,
-                    rating_dist: {"1":20,"2":40,"3":80,"4":180,"5":80},
-                    skin_type_ratings: {
-                        "Normal": {"avg_rating": 4.1, "review_count": 80},
-                        "Oily": {"avg_rating": 3.9, "review_count": 70},
-                        "Dry": {"avg_rating": 4.2, "review_count": 90},
-                        "Combination": {"avg_rating": 4.0, "review_count": 80},
-                        "Sensitive": {"avg_rating": 3.8, "review_count": 60}
-                    },
-                    drivers: {
-                        "negative": [
-                            {"name":"Value Price Repurchase", "share": 0.18}, 
-                            {"name":"Texture/Application", "share": 0.12}
-                        ],
-                        "positive": [
-                            {"name":"Product Performance & Efficacy", "share": 0.30}, 
-                            {"name":"Skin Compatibility", "share": 0.25}
-                        ]
-                    }
-                }
-            ],
-            meta: {
-                target_rating: 4.2
+        
+        // Formatters
+        const percent = (x) => (x * 100).toFixed(1) + '%';
+        const number = (x) => new Intl.NumberFormat().format(x);
+        
+        // Helper function to get slice data
+        function getSlice(brandId, secondaryCategoryId) {
+            if (!dashboardData || !dashboardData.cubes || !dashboardData.cubes.brand_secondary_category_slices) {
+                return null;
             }
-        };
-
+            
+            const slices = dashboardData.cubes.brand_secondary_category_slices;
+            
+            // Try to find exact match
+            let slice = slices.find(s => s.brand_id === brandId && s.secondary_category_id === secondaryCategoryId);
+            
+            // If not found, try to find "__ALL__" slice for the brand
+            if (!slice && secondaryCategoryId !== "__ALL__") {
+                slice = slices.find(s => s.brand_id === brandId && s.secondary_category_id === "__ALL__");
+            }
+            
+            return slice || null;
+        }
+        
         // Initialize dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            loadData();
-            setupEventListeners();
-        });
-
-        // Load data from JSON file or use fallback
-        async function loadData() {
+        async function initDashboard() {
             try {
+                // Fetch data with cache-busting
                 const response = await fetch('./data.json');
-                const data = await response.json();
-                allData = data.products;
-                targetRating = data.meta?.target_rating || 4.2;
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data');
+                }
+                
+                dashboardData = await response.json();
+                
+                // Set header
+                document.getElementById('dashboard-title').textContent = 'Supergoop! Customer Review Dashboard';
+                document.getElementById('last-updated').textContent = `Last updated: ${new Date(dashboardData.meta?.generated_at_utc).toLocaleString()}`;
+                
+                // Populate filters
+                populateFilters();
+                
+                // Set up event listeners
+                setupEventListeners();
+                
+                // Initial update
+                updateDashboard();
+                
             } catch (error) {
-                console.error('Error loading data from JSON, using fallback data:', error);
-                allData = dummyData.products;
-                targetRating = dummyData.meta.target_rating;
+                console.error('Error initializing dashboard:', error);
+                document.getElementById('dashboard-title').textContent = 'Error Loading Dashboard';
+                document.getElementById('last-updated').textContent = 'Please check your connection and try again.';
             }
-            
-            // Initialize filters
-            populateFilters();
-            
-            // Apply initial filters and render dashboard
-            applyFilters();
         }
-
-        // Helper functions for dataset scope
-        function getFilteredData(data, brandFilter, categoryFilter) {
-            return data.filter(product => {
-                const brandMatch = brandFilter === 'all' || product.brand === brandFilter;
-                const categoryMatch = categoryFilter === 'all' || product.category === categoryFilter;
-                return brandMatch && categoryMatch;
-            });
-        }
-
-        function getCategoryUniverseData(data, categoryFilter) {
-            return data.filter(product => {
-                return categoryFilter === 'all' || product.category === categoryFilter;
-            });
-        }
-
+        
         // Populate filter dropdowns
         function populateFilters() {
-            const brands = [...new Set(allData.map(p => p.brand))];
-            const categories = [...new Set(allData.map(p => p.category))];
+            // Brand filter
+            const brandFilter = document.getElementById('brand-filter');
+            brandFilter.innerHTML = '';
             
-            const brandFilter = document.getElementById('brandFilter');
-            const categoryFilter = document.getElementById('categoryFilter');
+            const brands = dashboardData.dims?.brands || [];
+            const targetBrand = brands.find(b => b.role === 'target');
             
-            // Clear existing options except "All"
-            while (brandFilter.children.length > 1) {
-                brandFilter.removeChild(brandFilter.lastChild);
-            }
-            while (categoryFilter.children.length > 1) {
-                categoryFilter.removeChild(categoryFilter.lastChild);
-            }
-            
-            // Add brand options
             brands.forEach(brand => {
                 const option = document.createElement('option');
-                option.value = brand;
-                option.textContent = brand.charAt(0).toUpperCase() + brand.slice(1);
+                option.value = brand.brand_id;
+                option.textContent = brand.brand_name;
+                if (targetBrand && brand.brand_id === targetBrand.brand_id) {
+                    option.selected = true;
+                }
                 brandFilter.appendChild(option);
             });
             
-            // Add category options
-            categories.forEach(category => {
-                const option = document.createElement('option');
-                option.value = category;
-                option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
-                categoryFilter.appendChild(option);
-            });
-            
-            // Set default filters
-            brandFilter.value = 'supergoop';
-            categoryFilter.value = 'all';
+            // Secondary Category filter
+            updateCategoryFilter();
         }
-
-        // Setup event listeners
+        
+        // Update category filter based on selected brand
+        function updateCategoryFilter() {
+            const brandId = document.getElementById('brand-filter').value;
+            const categoryFilter = document.getElementById('category-filter');
+            categoryFilter.innerHTML = '';
+            
+            if (!brandId) return;
+            
+            // Get all unique secondary categories for this brand
+            const slices = dashboardData.cubes?.brand_secondary_category_slices || [];
+            const brandSlices = slices.filter(s => s.brand_id === brandId);
+            const uniqueCategories = [...new Set(brandSlices.map(s => s.secondary_category_id))];
+            
+            // Add "__ALL__" option if available
+            if (uniqueCategories.includes("__ALL__")) {
+                const allOption = document.createElement('option');
+                allOption.value = "__ALL__";
+                allOption.textContent = "All Categories";
+                allOption.selected = true;
+                categoryFilter.appendChild(allOption);
+            }
+            
+            // Add other categories
+            const secondaryCategories = dashboardData.dims?.secondary_categories || {};
+            uniqueCategories
+                .filter(id => id !== "__ALL__")
+                .forEach(id => {
+                    const option = document.createElement('option');
+                    option.value = id;
+                    option.textContent = secondaryCategories[id] || id;
+                    categoryFilter.appendChild(option);
+                });
+        }
+        
+        // Set up event listeners
         function setupEventListeners() {
-            document.getElementById('brandFilter').addEventListener('change', applyFilters);
-            document.getElementById('categoryFilter').addEventListener('change', applyFilters);
-            
-            // Add click interactions to KPI cards
-            document.querySelectorAll('.kpi-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    this.style.transform = 'scale(0.98)';
-                    setTimeout(() => {
-                        this.style.transform = '';
-                    }, 200);
-                });
+            document.getElementById('brand-filter').addEventListener('change', () => {
+                updateCategoryFilter();
+                updateDashboard();
             });
-        }
-
-        // Apply filters to data
-        function applyFilters() {
-            const brandFilter = document.getElementById('brandFilter').value;
-            const categoryFilter = document.getElementById('categoryFilter').value;
             
-            filteredData = getFilteredData(allData, brandFilter, categoryFilter);
-            categoryUniverseData = getCategoryUniverseData(allData, categoryFilter);
-            
-            // Update dashboard
-            computeMetrics();
-            renderKPI();
-            renderCharts();
-            renderTable();
+            document.getElementById('category-filter').addEventListener('change', updateDashboard);
         }
-
-        // Compute metrics from filtered data
-        function computeMetrics() {
-            // Handle empty filteredData
-            if (filteredData.length === 0) {
-                window.metrics = {
-                    weightedRating: 0,
-                    vwds: 0,
-                    reviewShare: 0,
-                    ratingGap: targetRating,
-                    vwdsGap: 2.0,
-                    totalReviews: 0,
-                    totalValueDemand: 0,
-                    allValueDemand: 0
-                };
+        
+        // Update dashboard based on current filter values
+        function updateDashboard() {
+            const brandId = document.getElementById('brand-filter').value;
+            const categoryId = document.getElementById('category-filter').value;
+            
+            if (!brandId) return;
+            
+            const slice = getSlice(brandId, categoryId);
+            
+            // Update KPI cards
+            updateKpiCards(slice);
+            
+            // Update product lists
+            updateProductLists(slice);
+            
+            // Update charts
+            updateRatingChart(slice);
+            updatePositiveDriversChart(slice);
+            updateNegativeDriversChart(slice);
+            updateKeywordsCharts(slice);
+            updateBenchmarkChart(brandId);
+        }
+        
+        // Update KPI cards
+        function updateKpiCards(slice) {
+            if (!slice) {
+                document.getElementById('weighted-rating').textContent = '-';
+                document.getElementById('pwrs-share').textContent = '-';
+                document.getElementById('total-reviews').textContent = '-';
+                document.getElementById('positive-share').textContent = '-';
+                document.getElementById('negative-share').textContent = '-';
                 return;
             }
             
-            // Calculate weighted rating from filteredData
-            const totalReviewsFiltered = filteredData.reduce((sum, p) => sum + p.review_count, 0);
-            const weightedRatingSum = filteredData.reduce((sum, p) => sum + (p.avg_rating * p.review_count), 0);
-            const weightedRating = totalReviewsFiltered > 0 ? weightedRatingSum / totalReviewsFiltered : 0;
+            document.getElementById('weighted-rating').textContent = 
+                slice.kpis?.weighted_rating_current ? slice.kpis.weighted_rating_current.toFixed(2) : '-';
             
-            // Calculate value demand from filteredData
-            const valueDemandFiltered = filteredData.reduce((sum, p) => sum + (p.price * p.review_count), 0);
+            document.getElementById('pwrs-share').textContent = 
+                slice.kpis?.pwrs_share_current !== undefined ? percent(slice.kpis.pwrs_share_current) : '-';
             
-            // Calculate universe metrics from categoryUniverseData
-            const totalReviewsUniverse = categoryUniverseData.reduce((sum, p) => sum + p.review_count, 0);
-            const valueDemandUniverse = categoryUniverseData.reduce((sum, p) => sum + (p.price * p.review_count), 0);
+            document.getElementById('total-reviews').textContent = 
+                slice.review_volume?.total_reviews ? number(slice.review_volume.total_reviews) : '-';
             
-            // Calculate shares
-            const reviewShare = totalReviewsUniverse > 0 ? (totalReviewsFiltered / totalReviewsUniverse) * 100 : 0;
-            const vwds = valueDemandUniverse > 0 ? (valueDemandFiltered / valueDemandUniverse) * 100 : 0;
+            document.getElementById('positive-share').textContent = 
+                slice.review_volume?.sentiment_mix?.positive?.share !== undefined ? 
+                percent(slice.review_volume.sentiment_mix.positive.share) : '-';
             
-            // Calculate rating gap
-            const ratingGap = targetRating - weightedRating;
-            
-            // Calculate VWDS gap
-            const vwdsGap = 2.0 - vwds;
-            
-            // Store metrics for use in rendering
-            window.metrics = {
-                weightedRating,
-                vwds,
-                reviewShare,
-                ratingGap,
-                vwdsGap,
-                totalReviews: totalReviewsFiltered,
-                totalValueDemand: valueDemandFiltered,
-                allValueDemand: valueDemandUniverse
-            };
+            document.getElementById('negative-share').textContent = 
+                slice.review_volume?.sentiment_mix?.negative?.share !== undefined ? 
+                percent(slice.review_volume.sentiment_mix.negative.share) : '-';
         }
-
-        // Render KPI cards
-        function renderKPI() {
-            document.getElementById('weightedRating').textContent = window.metrics.weightedRating.toFixed(1);
-            document.getElementById('vwds').textContent = window.metrics.vwds.toFixed(2) + '%';
-            document.getElementById('reviewShare').textContent = window.metrics.reviewShare.toFixed(1) + '%';
-            document.getElementById('targetRating').textContent = targetRating.toFixed(1);
+        
+        // Update product lists
+        function updateProductLists(slice) {
+            // Update highest rated products
+            const highestRatedContainer = document.getElementById('highest-rated-products');
+            highestRatedContainer.innerHTML = '';
             
-            const ratingGap = document.getElementById('ratingGap');
-            ratingGap.textContent = window.metrics.ratingGap > 0 ? 
-                `-${window.metrics.ratingGap.toFixed(1)} gap` : 
-                `+${Math.abs(window.metrics.ratingGap).toFixed(1)} above target`;
+            // Update lowest rated products
+            const lowestRatedContainer = document.getElementById('lowest-rated-products');
+            lowestRatedContainer.innerHTML = '';
             
-            const vwdsGap = document.getElementById('vwdsGap');
-            vwdsGap.textContent = window.metrics.vwdsGap > 0 ? 
-                `-${window.metrics.vwdsGap.toFixed(2)}% gap` : 
-                `+${Math.abs(window.metrics.vwdsGap).toFixed(2)}% above target`;
-        }
-
-        // Render all charts
-        function renderCharts() {
-            renderRatingChart();
-            renderParetoChart();
-            renderScatterChart();
-            renderVWDSChart();
-            renderVWDSDecompositionChart();
-            renderLorenzChart();
-            renderHotspotChart();
-            renderNegativeDriversChart();
-            renderPositiveDriversChart();
-            renderSegmentChart();
-        }
-
-        // Render Rating Distribution chart
-        function renderRatingChart() {
-            const ctx = document.getElementById('ratingChart').getContext('2d');
-            
-            // Handle empty data
-            if (filteredData.length === 0) {
-                if (charts.rating) {
-                    charts.rating.destroy();
-                    charts.rating = null;
-                }
+            if (!slice || !slice.products) {
+                highestRatedContainer.innerHTML = '<div class="no-data">No product data available</div>';
+                lowestRatedContainer.innerHTML = '<div class="no-data">No product data available</div>';
                 return;
             }
             
-            // Initialize rating distribution
-            const ratingDistribution = [0, 0, 0, 0, 0]; // 1-5 stars
+            // Sort products by rating
+            const products = slice.products || [];
+            const sortedByRating = [...products].sort((a, b) => b.rating - a.rating);
             
-            // Check if we have actual rating distribution data
-            const hasRatingDist = filteredData.some(p => p.rating_dist);
+            // Get top 5 highest rated
+            const highestRated = sortedByRating.slice(0, 5);
             
-            if (hasRatingDist) {
-                // Use actual rating distribution data
-                filteredData.forEach(product => {
-                    if (product.rating_dist) {
-                        Object.entries(product.rating_dist).forEach(([rating, count]) => {
-                            const ratingIndex = parseInt(rating) - 1;
-                            if (ratingIndex >= 0 && ratingIndex < 5) {
-                                ratingDistribution[ratingIndex] += count;
-                            }
-                        });
-                    } else {
-                        // Fallback to estimation if rating_dist is missing for a product
-                        estimateRatingDistribution(product, ratingDistribution);
-                    }
-                });
+            // Get top 5 lowest rated
+            const lowestRated = sortedByRating.slice(-5).reverse();
+            
+            // Create product elements for highest rated
+            if (highestRated.length === 0) {
+                highestRatedContainer.innerHTML = '<div class="no-data">No product data available</div>';
             } else {
-                // Use estimation for all products
-                filteredData.forEach(product => {
-                    estimateRatingDistribution(product, ratingDistribution);
+                highestRated.forEach(product => {
+                    const productItem = document.createElement('div');
+                    productItem.className = 'product-item';
+                    
+                    const productName = document.createElement('div');
+                    productName.className = 'product-name';
+                    productName.textContent = product.name || 'Unknown Product';
+                    
+                    const productRating = document.createElement('div');
+                    productRating.className = 'product-rating';
+                    
+                    const ratingStars = document.createElement('span');
+                    ratingStars.className = 'rating-stars';
+                    ratingStars.textContent = '★'.repeat(Math.round(product.rating || 0)) + '☆'.repeat(5 - Math.round(product.rating || 0));
+                    
+                    const ratingValue = document.createElement('span');
+                    ratingValue.className = 'rating-value';
+                    ratingValue.textContent = (product.rating || 0).toFixed(1);
+                    
+                    const ratingCount = document.createElement('span');
+                    ratingCount.className = 'rating-count';
+                    ratingCount.textContent = `(${number(product.review_count || 0)})`;
+                    
+                    productRating.appendChild(ratingStars);
+                    productRating.appendChild(ratingValue);
+                    productRating.appendChild(ratingCount);
+                    
+                    productItem.appendChild(productName);
+                    productItem.appendChild(productRating);
+                    
+                    highestRatedContainer.appendChild(productItem);
                 });
             }
             
+            // Create product elements for lowest rated
+            if (lowestRated.length === 0) {
+                lowestRatedContainer.innerHTML = '<div class="no-data">No product data available</div>';
+            } else {
+                lowestRated.forEach(product => {
+                    const productItem = document.createElement('div');
+                    productItem.className = 'product-item';
+                    
+                    const productName = document.createElement('div');
+                    productName.className = 'product-name';
+                    productName.textContent = product.name || 'Unknown Product';
+                    
+                    const productRating = document.createElement('div');
+                    productRating.className = 'product-rating';
+                    
+                    const ratingStars = document.createElement('span');
+                    ratingStars.className = 'rating-stars';
+                    ratingStars.textContent = '★'.repeat(Math.round(product.rating || 0)) + '☆'.repeat(5 - Math.round(product.rating || 0));
+                    
+                    const ratingValue = document.createElement('span');
+                    ratingValue.className = 'rating-value';
+                    ratingValue.textContent = (product.rating || 0).toFixed(1);
+                    
+                    const ratingCount = document.createElement('span');
+                    ratingCount.className = 'rating-count';
+                    ratingCount.textContent = `(${number(product.review_count || 0)})`;
+                    
+                    productRating.appendChild(ratingStars);
+                    productRating.appendChild(ratingValue);
+                    productRating.appendChild(ratingCount);
+                    
+                    productItem.appendChild(productName);
+                    productItem.appendChild(productRating);
+                    
+                    lowestRatedContainer.appendChild(productItem);
+                });
+            }
+        }
+        
+        // Update rating chart
+        function updateRatingChart(slice) {
+            const ctx = document.getElementById('rating-chart').getContext('2d');
+            
+            // Destroy existing chart if it exists
             if (charts.rating) {
                 charts.rating.destroy();
             }
             
+            if (!slice || !slice.review_volume?.rating_distribution) {
+                // Show no data message
+                charts.rating = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['1', '2', '3', '4', '5'],
+                        datasets: [{
+                            data: [0, 0, 0, 0, 0],
+                            backgroundColor: 'rgba(200, 200, 200, 0.5)'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                enabled: false
+                            }
+                        }
+                    }
+                });
+                return;
+            }
+            
+            const ratingData = slice.review_volume.rating_distribution;
+            const labels = ['1', '2', '3', '4', '5'];
+            const data = labels.map(rating => ratingData[rating]?.share || 0);
+            const counts = labels.map(rating => ratingData[rating]?.count || 0);
+            
             charts.rating = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['1 Star', '2 Stars', '3 Stars', '4 Stars', '5 Stars'],
+                    labels: labels,
                     datasets: [{
-                        label: 'Review Count',
-                        data: ratingDistribution,
+                        label: 'Share',
+                        data: data,
                         backgroundColor: [
-                            colors.danger,
-                            colors.warning,
-                            '#fbbf24',
-                            colors.success,
-                            colors.success
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(255, 159, 64, 0.7)',
+                            'rgba(255, 205, 86, 0.7)',
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(54, 162, 235, 0.7)'
                         ],
-                        borderRadius: 4
+                        borderWidth: 0
                     }]
                 },
                 options: {
                     responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
+                    maintainAspectRatio: false,
                     scales: {
                         y: {
                             beginAtZero: true,
-                            grid: {
-                                color: colors.gray[0]
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Helper function to estimate rating distribution
-        function estimateRatingDistribution(product, ratingDistribution) {
-            const avg = product.avg_rating;
-            const count = product.review_count;
-            
-            // Simple distribution estimation
-            if (avg < 2) {
-                ratingDistribution[0] += count * 0.6;
-                ratingDistribution[1] += count * 0.3;
-                ratingDistribution[2] += count * 0.1;
-            } else if (avg < 3) {
-                ratingDistribution[0] += count * 0.2;
-                ratingDistribution[1] += count * 0.5;
-                ratingDistribution[2] += count * 0.3;
-            } else if (avg < 4) {
-                ratingDistribution[1] += count * 0.2;
-                ratingDistribution[2] += count * 0.4;
-                ratingDistribution[3] += count * 0.4;
-            } else {
-                ratingDistribution[2] += count * 0.1;
-                ratingDistribution[3] += count * 0.4;
-                ratingDistribution[4] += count * 0.5;
-            }
-        }
-
-        // Render Pareto Chart: Cumulative Gap Contribution
-        function renderParetoChart() {
-            const ctx = document.getElementById('paretoChart').getContext('2d');
-            
-            // Handle empty data
-            if (filteredData.length === 0) {
-                if (charts.pareto) {
-                    charts.pareto.destroy();
-                    charts.pareto = null;
-                }
-                return;
-            }
-            
-            // Calculate gap contribution for each product
-            const gapData = filteredData.map(product => {
-                const weightShare = product.review_count / window.metrics.totalReviews;
-                const gapContrib = product.avg_rating < targetRating ? 
-                    weightShare * (targetRating - product.avg_rating) : 0;
-                return {
-                    sku: product.sku,
-                    gapContrib: gapContrib
-                };
-            });
-            
-            // Sort by gap contribution (descending)
-            gapData.sort((a, b) => b.gapContrib - a.gapContrib);
-            
-            // Calculate cumulative percentage
-            const totalGap = gapData.reduce((sum, item) => sum + item.gapContrib, 0);
-            
-            // Handle case where there's no gap
-            if (totalGap === 0) {
-                if (charts.pareto) {
-                    charts.pareto.destroy();
-                    charts.pareto = null;
-                }
-                return;
-            }
-            
-            let cumulativeSum = 0;
-            const cumulativeData = gapData.map(item => {
-                cumulativeSum += item.gapContrib;
-                return (cumulativeSum / totalGap * 100);
-            });
-            
-            // Take top 10 for visualization
-            const topGapData = gapData.slice(0, 10);
-            const topCumulativeData = cumulativeData.slice(0, 10);
-            
-            const labels = topGapData.map(item => item.sku);
-            const gapValues = topGapData.map(item => (item.gapContrib * 100).toFixed(3));
-            
-            if (charts.pareto) {
-                charts.pareto.destroy();
-            }
-            
-            charts.pareto = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Gap Contribution (%)',
-                            data: gapValues,
-                            backgroundColor: colors.danger,
-                            borderColor: colors.danger,
-                            borderWidth: 1,
-                            order: 2,
-                            yAxisID: 'y'
-                        },
-                        {
-                            label: 'Cumulative %',
-                            data: topCumulativeData,
-                            type: 'line',
-                            borderColor: colors.primary,
-                            backgroundColor: 'transparent',
-                            borderWidth: 2,
-                            pointBackgroundColor: colors.primary,
-                            pointBorderColor: colors.primary,
-                            pointRadius: 4,
-                            tension: 0.1,
-                            order: 1,
-                            yAxisID: 'y1'
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'top'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    if (context.dataset.type === 'line') {
-                                        return `Cumulative: ${context.parsed.y.toFixed(1)}%`;
-                                    } else {
-                                        return `Gap: ${context.parsed.y}%`;
-                                    }
+                            ticks: {
+                                callback: function(value) {
+                                    return percent(value);
                                 }
                             }
                         }
                     },
-                    scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        },
-                        y: {
-                            type: 'linear',
-                            display: true,
-                            position: 'left',
-                            title: {
-                                display: true,
-                                text: 'Gap Contribution (%)'
-                            },
-                            grid: {
-                                color: colors.gray[0]
-                            }
-                        },
-                        y1: {
-                            type: 'linear',
-                            display: true,
-                            position: 'right',
-                            title: {
-                                display: true,
-                                text: 'Cumulative %'
-                            },
-                            grid: {
-                                drawOnChartArea: false
-                            },
-                            min: 0,
-                            max: 100
-                        }
-                    }
-                }
-            });
-        }
-
-        // Render Scatter Chart: Rating vs Review Volume
-        function renderScatterChart() {
-            const ctx = document.getElementById('scatterChart').getContext('2d');
-            
-            // Handle empty data
-            if (filteredData.length === 0) {
-                if (charts.scatter) {
-                    charts.scatter.destroy();
-                    charts.scatter = null;
-                }
-                return;
-            }
-            
-            // Prepare bubble data
-            const bubbleData = filteredData.map(product => {
-                const valueDemand = product.price * product.review_count;
-                const maxSize = Math.max(...filteredData.map(p => p.price * p.review_count));
-                const minSize = Math.min(...filteredData.map(p => p.price * p.review_count));
-                const normalizedSize = maxSize > minSize ? ((valueDemand - minSize) / (maxSize - minSize)) * 40 + 10 : 15;
-                
-                return {
-                    x: product.avg_rating,
-                    y: product.review_count,
-                    r: normalizedSize,
-                    sku: product.sku,
-                    price: product.price
-                };
-            });
-            
-            if (charts.scatter) {
-                charts.scatter.destroy();
-            }
-            
-            charts.scatter = new Chart(ctx, {
-                type: 'bubble',
-                data: {
-                    datasets: [{
-                        label: 'SKUs',
-                        data: bubbleData,
-                        backgroundColor: colors.primary + '80',
-                        borderColor: colors.primary,
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
                     plugins: {
                         legend: {
                             display: false
@@ -1330,734 +737,415 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    const point = context.raw;
-                                    return [
-                                        `SKU: ${point.sku}`,
-                                        `Rating: ${point.x}`,
-                                        `Reviews: ${point.y}`,
-                                        `Price: $${point.price}`,
-                                        `Value Demand: $${(point.price * point.y).toFixed(0)}`
-                                    ];
+                                    const index = context.dataIndex;
+                                    return `Share: ${percent(data[index])}, Count: ${number(counts[index])}`;
                                 }
                             }
                         }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Average Rating'
-                            },
-                            min: 3.0,
-                            max: 5.0,
-                            grid: {
-                                color: colors.gray[0]
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Review Count'
-                            },
-                            type: 'logarithmic',
-                            grid: {
-                                color: colors.gray[0]
-                            }
-                        }
                     }
                 }
             });
         }
-
-        // Render VWDS chart
-        function renderVWDSChart() {
-            const ctx = document.getElementById('vwdsChart').getContext('2d');
+        
+        // Update positive drivers chart
+        function updatePositiveDriversChart(slice) {
+            const ctx = document.getElementById('positive-drivers-chart').getContext('2d');
             
-            // Handle empty data
-            if (filteredData.length === 0) {
-                if (charts.vwds) {
-                    charts.vwds.destroy();
-                    charts.vwds = null;
-                }
-                return;
-            }
-            
-            // Calculate VWDS for each product
-            const vwdsData = filteredData.map(product => {
-                const valueDemand = product.price * product.review_count;
-                return {
-                    sku: product.sku,
-                    vwds: valueDemand
-                };
-            });
-            
-            // Sort by VWDS and take top 5
-            vwdsData.sort((a, b) => b.vwds - a.vwds);
-            const topVWDS = vwdsData.slice(0, 5);
-            
-            const labels = topVWDS.map(item => item.sku);
-            const data = topVWDS.map(item => (item.vwds / window.metrics.totalValueDemand * 100).toFixed(2));
-            
-            if (charts.vwds) {
-                charts.vwds.destroy();
-            }
-            
-            charts.vwds = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'VWDS Share (%)',
-                        data: data,
-                        backgroundColor: colors.primary,
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: colors.gray[0]
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Render VWDS Decomposition Chart
-        function renderVWDSDecompositionChart() {
-            const ctx = document.getElementById('vwdsDecompositionChart').getContext('2d');
-            
-            // Handle empty data
-            if (filteredData.length === 0) {
-                if (charts.vwdsDecomposition) {
-                    charts.vwdsDecomposition.destroy();
-                    charts.vwdsDecomposition = null;
-                }
-                return;
-            }
-            
-            // Group by brand in filteredData
-            const brandData = {};
-            filteredData.forEach(product => {
-                if (!brandData[product.brand]) {
-                    brandData[product.brand] = {
-                        totalVolume: 0,
-                        totalValueDemand: 0,
-                        avgPrice: 0,
-                        count: 0
-                    };
-                }
-                brandData[product.brand].totalVolume += product.review_count;
-                brandData[product.brand].totalValueDemand += product.price * product.review_count;
-                brandData[product.brand].count++;
-            });
-            
-            // Calculate average price for each brand
-            Object.keys(brandData).forEach(brand => {
-                brandData[brand].avgPrice = brandData[brand].totalValueDemand / brandData[brand].totalVolume;
-            });
-            
-            const brands = Object.keys(brandData);
-            const volumeData = brands.map(brand => brandData[brand].totalVolume);
-            const valueDemandData = brands.map(brand => brandData[brand].totalValueDemand);
-            
-            if (charts.vwdsDecomposition) {
-                charts.vwdsDecomposition.destroy();
-            }
-            
-            charts.vwdsDecomposition = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: brands.map(b => b.charAt(0).toUpperCase() + b.slice(1)),
-                    datasets: [
-                        {
-                            label: 'Total Review Volume',
-                            data: volumeData,
-                            backgroundColor: colors.info,
-                            borderRadius: 4
-                        },
-                        {
-                            label: 'Total Value Demand ($)',
-                            data: valueDemandData,
-                            backgroundColor: colors.primary,
-                            borderRadius: 4
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const brand = brands[context.dataIndex];
-                                    const avgPrice = brandData[brand].avgPrice;
-                                    return [
-                                        `${context.dataset.label}: ${context.parsed.y.toLocaleString()}`,
-                                        `Average Price: $${avgPrice.toFixed(2)}`
-                                    ];
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Count / Value ($)'
-                            },
-                            grid: {
-                                color: colors.gray[0]
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Render Lorenz Curve Chart
-        function renderLorenzChart() {
-            const ctx = document.getElementById('lorenzChart').getContext('2d');
-            
-            // Handle empty data
-            if (filteredData.length === 0) {
-                if (charts.lorenz) {
-                    charts.lorenz.destroy();
-                    charts.lorenz = null;
-                }
-                return;
-            }
-            
-            // Calculate value demand for each SKU
-            const skuValueDemand = filteredData.map(product => ({
-                sku: product.sku,
-                valueDemand: product.price * product.review_count
-            }));
-            
-            // Sort by value demand
-            skuValueDemand.sort((a, b) => a.valueDemand - b.valueDemand);
-            
-            // Calculate cumulative shares
-            const totalValueDemand = skuValueDemand.reduce((sum, item) => sum + item.valueDemand, 0);
-            const totalSKUs = skuValueDemand.length;
-            
-            let cumulativeValueDemand = 0;
-            const lorenzData = [{x: 0, y: 0}];
-            
-            skuValueDemand.forEach((item, index) => {
-                cumulativeValueDemand += item.valueDemand;
-                const xShare = ((index + 1) / totalSKUs) * 100;
-                const yShare = (cumulativeValueDemand / totalValueDemand) * 100;
-                lorenzData.push({x: xShare, y: yShare});
-            });
-            
-            // Add perfect equality line
-            const perfectEquality = [{x: 0, y: 0}, {x: 100, y: 100}];
-            
-            if (charts.lorenz) {
-                charts.lorenz.destroy();
-            }
-            
-            charts.lorenz = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    datasets: [
-                        {
-                            label: 'Lorenz Curve',
-                            data: lorenzData,
-                            borderColor: colors.primary,
-                            backgroundColor: colors.primary + '20',
-                            borderWidth: 2,
-                            fill: true,
-                            tension: 0.1
-                        },
-                        {
-                            label: 'Perfect Equality',
-                            data: perfectEquality,
-                            borderColor: colors.gray[3],
-                            borderWidth: 2,
-                            borderDash: [5, 5],
-                            fill: false
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.dataset.label}: (${context.parsed.x.toFixed(1)}%, ${context.parsed.y.toFixed(1)}%)`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Cumulative Share of SKUs (%)'
-                            },
-                            min: 0,
-                            max: 100,
-                            grid: {
-                                color: colors.gray[0]
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Cumulative Share of Value Demand (%)'
-                            },
-                            min: 0,
-                            max: 100,
-                            grid: {
-                                color: colors.gray[0]
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Render Driver Hotspots chart
-        function renderHotspotChart() {
-            const ctx = document.getElementById('hotspotChart').getContext('2d');
-            
-            // Handle empty data
-            if (filteredData.length === 0) {
-                if (charts.hotspot) {
-                    charts.hotspot.destroy();
-                    charts.hotspot = null;
-                }
-                return;
-            }
-            
-            // Get top 3 SKUs by review count from filteredData
-            const topSKUs = [...filteredData]
-                .sort((a, b) => b.review_count - a.review_count)
-                .slice(0, 3);
-            
-            const labels = topSKUs.map(p => p.sku);
-            
-            // Get top 3 negative drivers across all products in filteredData
-            const allNegativeDrivers = {};
-            filteredData.forEach(product => {
-                if (product.drivers && product.drivers.negative) {
-                    product.drivers.negative.forEach(driver => {
-                        if (!allNegativeDrivers[driver.name]) {
-                            allNegativeDrivers[driver.name] = 0;
-                        }
-                        allNegativeDrivers[driver.name] += driver.share * product.review_count;
-                    });
-                }
-            });
-            
-            const topDrivers = Object.entries(allNegativeDrivers)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 3)
-                .map(entry => entry[0]);
-            
-            // Create datasets for each driver
-            const datasets = topDrivers.map((driver, index) => {
-                const data = topSKUs.map(product => {
-                    if (product.drivers && product.drivers.negative) {
-                        const driverData = product.drivers.negative.find(d => d.name === driver);
-                        return driverData ? driverData.share * 100 : 0;
-                    }
-                    return 0;
-                });
-                
-                return {
-                    label: driver,
-                    data: data,
-                    backgroundColor: [colors.danger, colors.warning, colors.info][index]
-                };
-            });
-            
-            if (charts.hotspot) {
-                charts.hotspot.destroy();
-            }
-            
-            charts.hotspot = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: datasets
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 50,
-                            title: {
-                                display: true,
-                                text: 'Negative Review %'
-                            },
-                            grid: {
-                                color: colors.gray[0]
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Render Negative Drivers chart
-        function renderNegativeDriversChart() {
-            const ctx = document.getElementById('negativeDriversChart').getContext('2d');
-            
-            // Handle empty data
-            if (filteredData.length === 0) {
-                if (charts.negativeDrivers) {
-                    charts.negativeDrivers.destroy();
-                    charts.negativeDrivers = null;
-                }
-                return;
-            }
-            
-            // Aggregate negative drivers across all products in filteredData
-            const negativeDrivers = {};
-            filteredData.forEach(product => {
-                if (product.drivers && product.drivers.negative) {
-                    product.drivers.negative.forEach(driver => {
-                        if (!negativeDrivers[driver.name]) {
-                            negativeDrivers[driver.name] = 0;
-                        }
-                        negativeDrivers[driver.name] += driver.share * product.review_count;
-                    });
-                }
-            });
-            
-            // Sort by share and take top 5
-            const sortedDrivers = Object.entries(negativeDrivers)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5);
-            
-            const labels = sortedDrivers.map(entry => entry[0]);
-            const totalShare = Object.values(negativeDrivers).reduce((sum, val) => sum + val, 0);
-            const data = sortedDrivers.map(entry => (entry[1] / totalShare * 100).toFixed(1));
-            
-            if (charts.negativeDrivers) {
-                charts.negativeDrivers.destroy();
-            }
-            
-            charts.negativeDrivers = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Negative Review %',
-                        data: data,
-                        backgroundColor: colors.danger,
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            max: 40,
-                            title: {
-                                display: true,
-                                text: 'Negative Review %'
-                            },
-                            grid: {
-                                color: colors.gray[0]
-                            }
-                        },
-                        y: {
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Render Positive Drivers chart
-        function renderPositiveDriversChart() {
-            const ctx = document.getElementById('positiveDriversChart').getContext('2d');
-            
-            // Handle empty data
-            if (filteredData.length === 0) {
-                if (charts.positiveDrivers) {
-                    charts.positiveDrivers.destroy();
-                    charts.positiveDrivers = null;
-                }
-                return;
-            }
-            
-            // Aggregate positive drivers across all products in filteredData
-            const positiveDrivers = {};
-            filteredData.forEach(product => {
-                if (product.drivers && product.drivers.positive) {
-                    product.drivers.positive.forEach(driver => {
-                        if (!positiveDrivers[driver.name]) {
-                            positiveDrivers[driver.name] = 0;
-                        }
-                        positiveDrivers[driver.name] += driver.share * product.review_count;
-                    });
-                }
-            });
-            
-            // Sort by share and take top 5
-            const sortedDrivers = Object.entries(positiveDrivers)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5);
-            
-            const labels = sortedDrivers.map(entry => entry[0]);
-            const totalShare = Object.values(positiveDrivers).reduce((sum, val) => sum + val, 0);
-            const data = sortedDrivers.map(entry => (entry[1] / totalShare * 100).toFixed(1));
-            
+            // Destroy existing chart if it exists
             if (charts.positiveDrivers) {
                 charts.positiveDrivers.destroy();
             }
+            
+            if (!slice || !slice.drivers?.positive || slice.drivers.positive.length === 0) {
+                // Show no data message
+                charts.positiveDrivers = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['No data'],
+                        datasets: [{
+                            data: [0],
+                            backgroundColor: 'rgba(200, 200, 200, 0.5)'
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                enabled: false
+                            }
+                        }
+                    }
+                });
+                return;
+            }
+            
+            const drivers = slice.drivers.positive.slice(0, 9);
+            const labels = drivers.map(d => d.driver);
+            const data = drivers.map(d => d.share);
+            const counts = drivers.map(d => d.count);
             
             charts.positiveDrivers = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Positive Review %',
+                        label: 'Share',
                         data: data,
-                        backgroundColor: colors.success,
-                        borderRadius: 4
+                        backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                        borderWidth: 0
                     }]
                 },
                 options: {
                     indexAxis: 'y',
                     responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return percent(value);
+                                }
+                            }
+                        }
+                    },
                     plugins: {
                         legend: {
                             display: false
-                        }
-                    },
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            max: 40,
-                            title: {
-                                display: true,
-                                text: 'Positive Review %'
-                            },
-                            grid: {
-                                color: colors.gray[0]
-                            }
                         },
-                        y: {
-                            grid: {
-                                display: false
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const index = context.dataIndex;
+                                    return `Share: ${percent(data[index])}, Count: ${number(counts[index])}`;
+                                }
                             }
                         }
                     }
                 }
             });
         }
-
-        // Render Segment Analysis chart
-        function renderSegmentChart() {
-            const ctx = document.getElementById('segmentChart').getContext('2d');
+        
+        // Update negative drivers chart
+        function updateNegativeDriversChart(slice) {
+            const ctx = document.getElementById('negative-drivers-chart').getContext('2d');
             
-            // Handle empty data
-            if (filteredData.length === 0) {
-                if (charts.segment) {
-                    charts.segment.destroy();
-                    charts.segment = null;
-                }
+            // Destroy existing chart if it exists
+            if (charts.negativeDrivers) {
+                charts.negativeDrivers.destroy();
+            }
+            
+            if (!slice || !slice.drivers?.negative || slice.drivers.negative.length === 0) {
+                // Show no data message
+                charts.negativeDrivers = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['No data'],
+                        datasets: [{
+                            data: [0],
+                            backgroundColor: 'rgba(200, 200, 200, 0.5)'
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                enabled: false
+                            }
+                        }
+                    }
+                });
                 return;
             }
             
-            // Get top 5 SKUs by review count from filteredData
-            const topSKUs = [...filteredData]
-                .sort((a, b) => b.review_count - a.review_count)
-                .slice(0, 5);
+            const drivers = slice.drivers.negative.slice(0, 9);
+            const labels = drivers.map(d => d.driver);
+            const data = drivers.map(d => d.share);
+            const counts = drivers.map(d => d.count);
             
-            const labels = topSKUs.map(p => p.sku);
-            
-            // Get all unique skin types
-            const skinTypes = new Set();
-            topSKUs.forEach(product => {
-                if (product.skin_type_ratings) {
-                    Object.keys(product.skin_type_ratings).forEach(type => skinTypes.add(type));
-                }
-            });
-            
-            const skinTypeArray = Array.from(skinTypes);
-            
-            // Create datasets for each skin type
-            const datasets = skinTypeArray.map((skinType, index) => {
-                const data = topSKUs.map(product => {
-                    if (product.skin_type_ratings && product.skin_type_ratings[skinType]) {
-                        return product.skin_type_ratings[skinType].avg_rating;
-                    }
-                    return 0;
-                });
-                
-                return {
-                    label: skinType,
-                    data: data,
-                    backgroundColor: [colors.success, colors.info, colors.warning, colors.primary, colors.danger][index % 5]
-                };
-            });
-            
-            if (charts.segment) {
-                charts.segment.destroy();
-            }
-            
-            charts.segment = new Chart(ctx, {
+            charts.negativeDrivers = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: labels,
-                    datasets: datasets
+                    datasets: [{
+                        label: 'Share',
+                        data: data,
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                        borderWidth: 0
+                    }]
                 },
                 options: {
+                    indexAxis: 'y',
                     responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top'
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return percent(value);
+                                }
+                            }
                         }
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 5,
-                            title: {
-                                display: true,
-                                text: 'Rating'
-                            },
-                            grid: {
-                                color: colors.gray[0]
-                            }
+                    plugins: {
+                        legend: {
+                            display: false
                         },
-                        x: {
-                            grid: {
-                                display: false
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const index = context.dataIndex;
+                                    return `Share: ${percent(data[index])}, Count: ${number(counts[index])}`;
+                                }
                             }
                         }
                     }
                 }
             });
         }
-
-        // Render table of SKUs contributing to rating gap
-        function renderTable() {
-            const tableBody = document.querySelector('#skuTable tbody');
-            tableBody.innerHTML = '';
+        
+        // Update keywords charts
+        function updateKeywordsCharts(slice) {
+            const positiveCtx = document.getElementById('positive-keywords-chart').getContext('2d');
+            const negativeCtx = document.getElementById('negative-keywords-chart').getContext('2d');
             
-            // Handle empty data
-            if (filteredData.length === 0) {
-                const row = document.createElement('tr');
-                row.innerHTML = '<td colspan="4" style="text-align: center;">No data available for the selected filters</td>';
-                tableBody.appendChild(row);
+            // Destroy existing charts if they exist
+            if (charts.positiveKeywords) {
+                charts.positiveKeywords.destroy();
+            }
+            if (charts.negativeKeywords) {
+                charts.negativeKeywords.destroy();
+            }
+            
+            if (!slice) {
+                // Show no data message
+                charts.positiveKeywords = new Chart(positiveCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['No data'],
+                        datasets: [{
+                            data: [0],
+                            backgroundColor: 'rgba(200, 200, 200, 0.5)'
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                enabled: false
+                            }
+                        }
+                    }
+                });
+                
+                charts.negativeKeywords = new Chart(negativeCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['No data'],
+                        datasets: [{
+                            data: [0],
+                            backgroundColor: 'rgba(200, 200, 200, 0.5)'
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                enabled: false
+                            }
+                        }
+                    }
+                });
                 return;
             }
             
-            // Calculate gap contribution for each product
-            const gapContributions = filteredData.map(product => {
-                const brandTotalReviews = filteredData
-                    .filter(p => p.brand === product.brand)
-                    .reduce((sum, p) => sum + p.review_count, 0);
-                
-                const weightShare = product.review_count / brandTotalReviews;
-                const gapContrib = product.avg_rating < targetRating ? 
-                    weightShare * (targetRating - product.avg_rating) : 0;
-                
-                return {
-                    ...product,
-                    weightShare: (product.review_count / window.metrics.totalReviews * 100).toFixed(2),
-                    gapContrib: gapContrib
-                };
-            });
+            // Always use "All Drivers" view since the filter is removed
+            const positiveKeywords = slice.keywords?.top_positive || [];
+            const negativeKeywords = slice.keywords?.top_negative || [];
             
-            // Sort by gap contribution (descending)
-            gapContributions.sort((a, b) => b.gapContrib - a.gapContrib);
-            
-            // Take top 5
-            const topGapContributors = gapContributions.slice(0, 5);
-            
-            // Create table rows
-            topGapContributors.forEach(product => {
-                const row = document.createElement('tr');
+            // Sort and get top 10
+            const sortedPositiveKeywords = positiveKeywords
+                .sort((a, b) => b.mention_count - a.mention_count)
+                .slice(0, 10);
                 
-                // Determine rating class
-                let ratingClass = 'rating-high';
-                let dotClass = 'high';
-                if (product.avg_rating < 3.9) {
-                    ratingClass = 'rating-low';
-                    dotClass = 'low';
-                } else if (product.avg_rating < 4.1) {
-                    ratingClass = 'rating-medium';
-                    dotClass = 'medium';
+            const sortedNegativeKeywords = negativeKeywords
+                .sort((a, b) => b.mention_count - a.mention_count)
+                .slice(0, 10);
+            
+            // Positive keywords chart
+            const posLabels = sortedPositiveKeywords.map(k => k.keyword);
+            const posData = sortedPositiveKeywords.map(k => k.mention_count);
+            
+            charts.positiveKeywords = new Chart(positiveCtx, {
+                type: 'bar',
+                data: {
+                    labels: posLabels,
+                    datasets: [{
+                        label: 'Mentions',
+                        data: posData,
+                        backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const index = context.dataIndex;
+                                    const keyword = sortedPositiveKeywords[index];
+                                    return [
+                                        `Keyword: ${keyword.keyword}`,
+                                        `Driver: ${keyword.driver}`,
+                                        `Total Mentions: ${number(keyword.mention_count)}`,
+                                        `Positive: ${number(keyword.pos_mentions)} (${percent(keyword.pos_share)})`,
+                                        `Neutral: ${number(keyword.neu_mentions)} (${percent(keyword.neu_share)})`,
+                                        `Negative: ${number(keyword.neg_mentions)} (${percent(keyword.neg_share)})`
+                                    ];
+                                }
+                            }
+                        }
+                    }
                 }
-                
-                row.innerHTML = `
-                    <td class="product-name">${product.sku}</td>
-                    <td class="price">$${product.price}</td>
-                    <td>
-                        <div class="rating-indicator">
-                            <span class="rating-dot ${dotClass}"></span>
-                            <span class="rating ${ratingClass}">${product.avg_rating.toFixed(1)}</span>
-                        </div>
-                    </td>
-                    <td class="weight">${product.weightShare}%</td>
-                `;
-                
-                tableBody.appendChild(row);
             });
             
-            // Add hover effects
-            document.querySelectorAll('.redesigned-table tbody tr').forEach(row => {
-                row.addEventListener('mouseenter', function() {
-                    this.style.cursor = 'pointer';
-                });
+            // Negative keywords chart
+            const negLabels = sortedNegativeKeywords.map(k => k.keyword);
+            const negData = sortedNegativeKeywords.map(k => k.mention_count);
+            
+            charts.negativeKeywords = new Chart(negativeCtx, {
+                type: 'bar',
+                data: {
+                    labels: negLabels,
+                    datasets: [{
+                        label: 'Mentions',
+                        data: negData,
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const index = context.dataIndex;
+                                    const keyword = sortedNegativeKeywords[index];
+                                    return [
+                                        `Keyword: ${keyword.keyword}`,
+                                        `Driver: ${keyword.driver}`,
+                                        `Total Mentions: ${number(keyword.mention_count)}`,
+                                        `Positive: ${number(keyword.pos_mentions)} (${percent(keyword.pos_share)})`,
+                                        `Neutral: ${number(keyword.neu_mentions)} (${percent(keyword.neu_share)})`,
+                                        `Negative: ${number(keyword.neg_mentions)} (${percent(keyword.neg_share)})`
+                                    ];
+                                }
+                            }
+                        }
+                    }
+                }
             });
         }
+        
+        // Update benchmark chart
+        function updateBenchmarkChart(selectedBrandId) {
+            const benchmarkContainer = document.getElementById('benchmark-container');
+            const ctx = document.getElementById('benchmark-chart').getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (charts.benchmark) {
+                charts.benchmark.destroy();
+            }
+            
+            if (!dashboardData.market?.benchmark_brands || dashboardData.market.benchmark_brands.length === 0) {
+                benchmarkContainer.style.display = 'none';
+                return;
+            }
+            
+            benchmarkContainer.style.display = 'block';
+            
+            const benchmarkBrands = dashboardData.market.benchmark_brands;
+            const labels = benchmarkBrands.map(b => b.brand_name);
+            const data = benchmarkBrands.map(b => b.pwrs_share);
+            const backgroundColors = benchmarkBrands.map(b => {
+                return b.brand_id === selectedBrandId ? 'rgba(233, 30, 99, 0.7)' : 'rgba(200, 200, 200, 0.5)';
+            });
+            
+            charts.benchmark = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'PWRS Share',
+                        data: data,
+                        backgroundColor: backgroundColors,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return percent(value);
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `PWRS Share: ${percent(context.raw)}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Initialize the dashboard when the page loads
+        document.addEventListener('DOMContentLoaded', initDashboard);
     </script>
 </body>
 </html>
