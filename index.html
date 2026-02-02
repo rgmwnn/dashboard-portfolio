@@ -247,6 +247,122 @@
             color: var(--dark-gray);
         }
         
+        .problems-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .problem-card {
+            background-color: var(--white);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .problem-card:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .problem-card.active {
+            border: 2px solid var(--accent-color);
+        }
+        
+        .problem-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+        
+        .problem-value {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+        
+        .problem-description {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            color: var(--dark-gray);
+            margin-top: 5px;
+        }
+        
+        .recommendation-container {
+            display: none;
+            background-color: var(--white);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        
+        .recommendation-container.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .recommendation-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+        
+        .recommendation-goal {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+        
+        .recommendation-section {
+            margin-bottom: 20px;
+        }
+        
+        .recommendation-section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+        
+        .recommendation-list {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+        
+        .recommendation-list li {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 15px;
+            line-height: 1.5;
+        }
+        
+        .recommendation-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        
         @media (max-width: 768px) {
             .charts-container {
                 grid-template-columns: 1fr;
@@ -257,6 +373,10 @@
             }
             
             .products-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .problems-container {
                 grid-template-columns: 1fr;
             }
         }
@@ -369,6 +489,24 @@
                 <canvas id="benchmark-chart"></canvas>
             </div>
         </div>
+        
+        <div class="problems-container">
+            <div class="problem-card" id="low-rating-problem" onclick="toggleRecommendation('low-rating')">
+                <div class="problem-title">Low Rating</div>
+                <div class="problem-value">3.87</div>
+                <div class="problem-description">Current weighted rating is below target</div>
+            </div>
+            
+            <div class="problem-card" id="low-pwrs-problem" onclick="toggleRecommendation('low-pwrs')">
+                <div class="problem-title">Low Price-Weighted Review Share</div>
+                <div class="problem-value">1.66%</div>
+                <div class="problem-description">Current PWRS is below target</div>
+            </div>
+        </div>
+        
+        <div class="recommendation-container" id="recommendation-container">
+            <!-- Content will be dynamically inserted here -->
+        </div>
     </div>
 
     <script>
@@ -381,6 +519,55 @@
             positiveKeywords: null,
             negativeKeywords: null,
             benchmark: null
+        };
+        
+        // Recommendation content data
+        const recommendationData = {
+            'low-rating': {
+                title: 'Recommendation for Low Rating',
+                goal: 'Goal: Move Weighted Rating toward ≥4.2 by eliminating the highest-frequency friction on the highest-weight SKUs (not by broad "brand messaging").',
+                sections: [
+                    {
+                        title: 'Action plan (highly actionable)',
+                        items: [
+                            'Do a "Top-Impact SKU" strike list (Week 1): Pull the top-reviewed SKUs, then select the top 5 lowest-rated among them (your deck already frames this as highest ROI). For each SKU, assign one primary hotspot objective (e.g., "reduce greasy finish complaints").',
+                            'Convert complaints into fix-specs (Week 1–2): For each priority SKU, turn negative keywords into "non-negotiable requirements": Greasy / heavy / sticky → target dry-down time, finish, slip, and transfer behavior; White cast → pigment dispersion / tint strategy / instructions per skin tone range; Pilling → compatibility with common moisturizers/primers + layer-order guidance; Breakouts / rash / irritation / eye sting → irritant audit + sensitive-skin guidance + "eye area" usage warnings',
+                            'Ship "usage guidance fixes" immediately (Week 2) before formula changes: Update PDP + packaging instructions to reduce user-error-driven negatives: amount (2-finger rule), wait time before makeup, reapply cadence, water/sweat conditions, and "avoid direct eye line" guidance if eye-sting appears. This is the fastest lever while R&D works.',
+                            'Add a "Compatibility Matrix" on PDP (Week 2–3): A small block: Best for: oily/dry/sensitive; Under makeup: yes/no; Finish: dewy/matte; White-cast risk: low/med/high; Reapply feel: light/med/heavy. This directly targets Sensory + Makeup Compatibility drivers.',
+                            'Implement a "Complaint-rate QC gate" for new batches (Month 1–2): For the priority SKUs, track complaint rate per 1,000 reviews for: greasy, white cast, pilling, irritation/eye sting. Use it as a release gate for reformulation/packaging updates.',
+                            'Run a "neutral-to-positive conversion" program (Month 1): Your deck maps 3★ as neutral; target these users with education: "how to apply," "how much product," "best pairing," "what finish to expect," "when it\'s worth upgrading to tinted." This protects 4–5★ share and reduces drift into 1–2★.',
+                            'Proof upgrade (Month 1–2): Where performance/efficacy is questioned, add credible proof cues (usage conditions, clinical/stat claims where valid, clear reapply guidance). The goal is to strengthen "works/protects" confidence, which your positives already show.',
+                            'Operational "fast fixes" (Week 2–4): If Packaging/Practical Issues show up (you have it as a driver), resolve leakage, cap durability, pump clogging, etc. These are fast wins that disproportionately reduce 1–2★ anger.'
+                        ]
+                    },
+                    {
+                        title: 'Success tracking (simple + defensible)',
+                        items: [
+                            'Primary: Weighted Rating ↑; 1–2★ share ↓, 4–5★ share stable/↑ (your deck\'s core KPI framing).',
+                            'Driver KPIs: Complaint-rate per 1,000 reviews for greasy, white cast, pilling, irritation/eye sting ↓',
+                            'SKU KPIs: Rating lift on the 5 priority SKUs + reduction in their "gap contribution" (review-weight × rating shortfall)'
+                        ]
+                    }
+                ]
+            },
+            'low-pwrs': {
+                title: 'Recommendation for Low PWRS',
+                goal: 'Goal: Lift PWRS share toward ≥2.0% by increasing value-weighted attention (review volume × price) through hero SKU positioning, assortment/value framing, and conversion drivers—not just "more reviews."',
+                sections: [
+                    {
+                        title: 'Action plan (highly actionable)',
+                        items: [
+                            'Identify "PWRS Leverage SKUs" (Week 1): Rank SKUs by (price × review volume) and pick: High price + medium reviews (big upside); High reviews + mid/high price (protect + amplify); Low PWRS contributors to deprioritize (long tail). This aligns with your "Pareto effect" framing: move the heavy hitters first.',
+                            'Hero SKU repositioning (Week 2–4): On Sephora-facing assets (PDP, imagery, bullets), lead with the already-proven positives: effective/works well, absorbs quickly, gentle, tinted helps finish. These are your "conversion levers" tied to positive drivers.',
+                            'Value framing to neutralize "too expensive" (Week 2): Don\'t discount first. Add crisp math + usage clarity: "cost per application" estimate; "how long it lasts" with correct amount guidance; highlight multi-benefit (SPF + primer-like finish, tinted coverage, etc.) where true. This is explicitly recommended in your deck (reduce value resistance without racing to discount).',
+                            'Bundle strategy that increases PWRS numerator (Month 1): Launch bundles/discovery sets that anchor on higher-priced heroes (or higher-value kits), designed to convert trial → full-size. Bundles increase value-weighted attention while protecting brand premium.',
+                            'Review generation focused on high-price/high-margin items (Month 1): Trigger review requests post-purchase specifically for PWRS leverage SKUs (email/SMS via retailer tools where possible). Objective: shift review volume toward higher price points, not evenly across SKUs.',
+                            'Assortment cleanup (Month 1–2): If certain SKUs repeatedly underperform on rating (dragging conversion), reduce emphasis and redirect traffic to higher-performing variants (e.g., tinted/no-cast options) that align with positive drivers. This links PWRS growth to quality signals.',
+                            'Close the benchmark gap with a two-move combo (Quarterly): Your benchmark shows leaders combine higher ratings + higher PWRS; therefore PWRS lift needs (a) rating lift on priority SKUs + (b) merchandising/assortment that pushes value-weighted mix. Treat it as one program, not two separate workstreams.'
+                        ]
+                    }
+                ]
+            }
         };
         
         // Formatters
@@ -404,6 +591,71 @@
             }
             
             return slice || null;
+        }
+        
+        // Toggle recommendation visibility
+        function toggleRecommendation(problemType) {
+            // Remove active class from all problem cards
+            document.querySelectorAll('.problem-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // Hide recommendation container
+            const recommendationContainer = document.getElementById('recommendation-container');
+            recommendationContainer.classList.remove('show');
+            
+            // Add active class to the clicked problem card
+            const problemCardId = problemType + '-problem';
+            const problemCardElement = document.getElementById(problemCardId);
+            if (problemCardElement) {
+                problemCardElement.classList.add('active');
+            }
+            
+            // Clear previous content
+            recommendationContainer.innerHTML = '';
+            
+            // Add new content based on the selected problem
+            const data = recommendationData[problemType];
+            if (data) {
+                // Create title
+                const titleElement = document.createElement('div');
+                titleElement.className = 'recommendation-title';
+                titleElement.textContent = data.title;
+                recommendationContainer.appendChild(titleElement);
+                
+                // Create goal
+                const goalElement = document.createElement('div');
+                goalElement.className = 'recommendation-goal';
+                goalElement.textContent = data.goal;
+                recommendationContainer.appendChild(goalElement);
+                
+                // Create sections
+                data.sections.forEach(section => {
+                    // Create section title
+                    const sectionTitleElement = document.createElement('div');
+                    sectionTitleElement.className = 'recommendation-section-title';
+                    sectionTitleElement.textContent = section.title;
+                    recommendationContainer.appendChild(sectionTitleElement);
+                    
+                    // Create list
+                    const listElement = document.createElement('ul');
+                    listElement.className = 'recommendation-list';
+                    
+                    // Add list items
+                    section.items.forEach(item => {
+                        const itemElement = document.createElement('li');
+                        itemElement.textContent = item;
+                        listElement.appendChild(itemElement);
+                    });
+                    
+                    recommendationContainer.appendChild(listElement);
+                });
+                
+                // Show the recommendation container with animation
+                setTimeout(() => {
+                    recommendationContainer.classList.add('show');
+                }, 10);
+            }
         }
         
         // Initialize dashboard
@@ -984,8 +1236,14 @@
             const positiveKeywords = slice.keywords?.top_positive || [];
             const negativeKeywords = slice.keywords?.top_negative || [];
             
+            // Get all negative keywords to exclude from positive
+            const negativeKeywordNames = new Set(negativeKeywords.map(k => k.keyword));
+            
+            // Filter positive keywords to exclude those already in negative
+            const filteredPositiveKeywords = positiveKeywords.filter(k => !negativeKeywordNames.has(k.keyword));
+            
             // Sort and get top 10
-            const sortedPositiveKeywords = positiveKeywords
+            const sortedPositiveKeywords = filteredPositiveKeywords
                 .sort((a, b) => b.mention_count - a.mention_count)
                 .slice(0, 10);
                 
@@ -1149,4 +1407,3 @@
     </script>
 </body>
 </html>
-
